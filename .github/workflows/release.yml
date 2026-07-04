@@ -1,0 +1,89 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build-go:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - { goos: linux,  goarch: amd64 }
+          - { goos: linux,  goarch: arm64 }
+          - { goos: darwin, goarch: amd64 }
+          - { goos: darwin, goarch: arm64 }
+          - { goos: windows, goarch: amd64 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go/go.mod
+      - name: build
+        env: { GOOS: '${{ matrix.goos }}', GOARCH: '${{ matrix.goarch }}' }
+        run: |
+          ext=""; [ "$GOOS" = windows ] && ext=".exe"
+          cd go && go build -trimpath -ldflags="-s -w" -o "../gridmd-go-$GOOS-$GOARCH$ext" ./cmd/gridmd
+      - uses: actions/upload-artifact@v4
+        with: { name: 'go-${{ matrix.goos }}-${{ matrix.goarch }}', path: 'gridmd-go-*' }
+
+  build-rust:
+    strategy:
+      matrix:
+        include:
+          - { os: ubuntu-latest, triple: x86_64-unknown-linux-gnu }
+          - { os: macos-15,      triple: aarch64-apple-darwin }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cd rust && cargo build --release
+      - run: cp rust/target/release/gridmd gridmd-rust-${{ matrix.triple }}
+      - uses: actions/upload-artifact@v4
+        with: { name: 'rust-${{ matrix.triple }}', path: 'gridmd-rust-*' }
+
+  build-swift:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift build -c release
+      - run: cp .build/release/gridmd gridmd-swift-aarch64-apple-darwin
+      - uses: actions/upload-artifact@v4
+        with: { name: swift-macos, path: 'gridmd-swift-*' }
+
+  release:
+    needs: [build-go, build-rust, build-swift]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { merge-multiple: true }
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            gridmd-go-*
+            gridmd-rust-*
+            gridmd-swift-*
+          generate_release_notes: true
+
+  npm-publish:
+    # Publishes the TypeScript lib as "gridmd". No-ops until NPM_TOKEN exists.
+    needs: [release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, registry-url: 'https://registry.npmjs.org' }
+      - name: publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "NPM_TOKEN not configured — skipping npm publish (SPM consumers use the git tag directly)"
+            exit 0
+          fi
+          cd js && bun install && bun run build && npm publish --access public

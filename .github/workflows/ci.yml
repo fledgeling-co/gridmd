@@ -1,0 +1,75 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  js:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: cd js && bun install
+      - name: test (bun once migrated, node:test until then)
+        run: |
+          cd js
+          if [ -f bunfig.toml ]; then bun test; else node --test 'test/*.test.js'; fi
+
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go/go.mod
+      - run: cd go && go vet ./... && go test ./... -coverpkg=./... -coverprofile=cover.out
+      - name: coverage floor 99%
+        run: |
+          cd go
+          total=$(go tool cover -func=cover.out | awk '/^total:/ {gsub(/%/,"",$3); print $3}')
+          echo "coverage: ${total}%"
+          awk -v t="$total" 'BEGIN { exit (t+0 >= 99.0) ? 0 : 1 }'
+
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust
+      - run: cd rust && cargo test
+
+  swift:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift test
+
+  conformance:
+    # The cross-language gate: every implementation satisfies the three laws
+    # (conformance/README.md) on the same fixtures.
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go/go.mod
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust
+      - run: cd js && bun install
+      - run: mkdir -p .bin && cd go && go build -o ../.bin/gridmd-go ./cmd/gridmd
+      - run: cd rust && cargo build --release && cp target/release/gridmd ../.bin/gridmd-rust
+      - run: swift build -c release && cp .build/release/gridmd .bin/gridmd-swift
+      - run: chmod +x scripts/*.sh
+      - run: |
+          scripts/conformance.sh \
+            js="scripts/gridmd-js.sh" \
+            go=.bin/gridmd-go \
+            rust=.bin/gridmd-rust \
+            swift=.bin/gridmd-swift
