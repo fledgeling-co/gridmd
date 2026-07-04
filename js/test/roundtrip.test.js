@@ -12,7 +12,7 @@ import { writeXlsx } from '../src/xlsx/write.js';
 import { xlsxToGridmd } from '../src/xlsx/read.js';
 import { refKey } from '../src/refs.js';
 
-const examplePath = fileURLToPath(new URL('../examples/quarterly-report.gmd', import.meta.url));
+const examplePath = fileURLToPath(new URL('../../examples/quarterly-report.gmd', import.meta.url));
 
 function modelOf(source, baseDir = '.') {
   const res = lint(source, { mode: 'strict' });

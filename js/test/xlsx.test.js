@@ -10,7 +10,7 @@ import { zipWrite, zipRead, crc32 } from '../src/xlsx/zip.js';
 import { isoToSerial, pxToColWidth, resolveColor } from '../src/xlsx/units.js';
 import { resolveDataRef, splitTopLevel } from '../src/xlsx/chart.js';
 
-const examplePath = fileURLToPath(new URL('../examples/quarterly-report.gmd', import.meta.url));
+const examplePath = fileURLToPath(new URL('../../examples/quarterly-report.gmd', import.meta.url));
 
 const convert = (src, baseDir = '.') => {
   const res = lint(src, { mode: 'strict' });

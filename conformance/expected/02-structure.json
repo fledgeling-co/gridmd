@@ -1,0 +1,97 @@
+{
+ "gridmd": "0.1",
+ "title": "Structure fixture",
+ "dateSystem": 1904,
+ "names": [],
+ "sheets": [
+  {
+   "name": "Front",
+   "kind": "worksheet",
+   "hidden": false,
+   "freeze": "B2",
+   "protected": false,
+   "cells": {
+    "A1": {
+     "t": "s",
+     "v": "Merged title"
+    },
+    "A3": {
+     "t": "s",
+     "v": "Linked"
+    },
+    "B3": {
+     "t": "n",
+     "v": 42
+    },
+    "C4": {
+     "t": "f",
+     "f": "B3*2",
+     "cached": {
+      "t": "n",
+      "v": 84
+     },
+     "array": null
+    }
+   },
+   "merges": [
+    "A1:C1"
+   ],
+   "tables": [],
+   "counts": {
+    "cf": 0,
+    "validations": 0,
+    "notes": 1,
+    "threads": 0,
+    "scenarios": 0,
+    "sparklines": 0,
+    "charts": 0,
+    "pivots": 0,
+    "slicers": 0,
+    "images": 0,
+    "shapes": 0,
+    "hyperlinks": 1
+   }
+  },
+  {
+   "name": "Hidden",
+   "kind": "worksheet",
+   "hidden": true,
+   "freeze": null,
+   "protected": true,
+   "cells": {
+    "A1": {
+     "t": "s",
+     "v": "a"
+    },
+    "B1": {
+     "t": "n",
+     "v": 1
+    },
+    "A2": {
+     "t": "s",
+     "v": "b"
+    },
+    "B2": {
+     "t": "n",
+     "v": 2
+    }
+   },
+   "merges": [],
+   "tables": [],
+   "counts": {
+    "cf": 0,
+    "validations": 0,
+    "notes": 0,
+    "threads": 0,
+    "scenarios": 0,
+    "sparklines": 0,
+    "charts": 0,
+    "pivots": 0,
+    "slicers": 0,
+    "images": 0,
+    "shapes": 0,
+    "hyperlinks": 0
+   }
+  }
+ ]
+}

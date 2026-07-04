@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { lint } from '../src/index.js';
 
-const path = fileURLToPath(new URL('../examples/quarterly-report.gmd', import.meta.url));
+const path = fileURLToPath(new URL('../../examples/quarterly-report.gmd', import.meta.url));
 
 test('the worked example machine-validates with zero errors', () => {
   const res = lint(readFileSync(path, 'utf8'), { mode: 'strict' });

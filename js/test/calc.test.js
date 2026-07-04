@@ -7,7 +7,7 @@ import { lint } from '../src/index.js';
 import { buildWorkbookModel } from '../src/xlsx/model.js';
 import { createEvaluator, verifyCachedValues } from '../src/calc.js';
 
-const examplePath = fileURLToPath(new URL('../examples/quarterly-report.gmd', import.meta.url));
+const examplePath = fileURLToPath(new URL('../../examples/quarterly-report.gmd', import.meta.url));
 
 const modelOf = (src, baseDir = '.') => {
   const res = lint(src, { mode: 'strict' });

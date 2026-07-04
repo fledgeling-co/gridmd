@@ -1,0 +1,66 @@
+---
+gridmd: "0.1"
+title: Features fixture
+---
+
+# Data
+
+```{table} Items at A1
+style: medium-2
+total:
+  qty: =SUBTOTAL(109,[qty])
+cols:
+  qty: { numfmt: "0" }
+filter:
+  status: { values: [open] }
+sort:
+  - { col: qty, order: desc, by: value }
+---
+| item | qty | status |
+| Alpha | 4 | open |
+| Beta | 9 | done |
+| Gamma | 2 | open |
+```
+
+```{cf} B2:B4
+- when: "> 5"
+  format: { fill: "#E7F6E7" }
+- bars: { color: "#638EC6" }
+- icons: 3-arrows
+```
+
+```{validation} C2:C4
+type: list
+values: [open, done]
+```
+
+```{comments} B3
+- by: "Reviewer"
+  at: 2026-07-01T10:00:00Z
+  text: "Check this quantity."
+  resolved: false
+```
+
+```{scenario} Surge
+cells: { B2: 10 }
+comment: "Demand doubles"
+```
+
+```{sparklines} E2:E4
+type: line
+source: F2:H4
+```
+
+```{grid} F2
+| 1 | 2 | 3 |
+| 3 | 2 | 1 |
+| 2 | 2 | 2 |
+```
+
+```{chart} column "Qty by item" at H6:M18
+series:
+  - name: Qty
+    cat: Items[item]
+    val: Items[qty]
+legend: { position: bottom }
+```

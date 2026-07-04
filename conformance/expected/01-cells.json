@@ -1,0 +1,160 @@
+{
+ "gridmd": "0.1",
+ "title": "Cells fixture",
+ "dateSystem": 1900,
+ "names": [
+  {
+   "name": "FtoC",
+   "ref": null,
+   "formula": "LAMBDA(F,(F-32)*5/9)",
+   "value": null
+  },
+  {
+   "name": "Rate",
+   "ref": "Main!$B$1",
+   "formula": null,
+   "value": null
+  }
+ ],
+ "sheets": [
+  {
+   "name": "Main",
+   "kind": "worksheet",
+   "hidden": false,
+   "freeze": null,
+   "protected": false,
+   "cells": {
+    "A1": {
+     "t": "s",
+     "v": "Quoted text"
+    },
+    "B1": {
+     "t": "n",
+     "v": 0.3
+    },
+    "C1": {
+     "t": "b",
+     "v": true
+    },
+    "D1": {
+     "t": "d",
+     "v": "2026-07-04"
+    },
+    "E1": {
+     "t": "e",
+     "v": "#DIV/0!"
+    },
+    "F1": {
+     "t": "f",
+     "f": "B1*10",
+     "cached": {
+      "t": "n",
+      "v": 3
+     },
+     "array": null
+    },
+    "G1": {
+     "t": "f",
+     "f": "IF(B1>0,\"pos\",\"neg\")",
+     "cached": {
+      "t": "s",
+      "v": "pos"
+     },
+     "array": null
+    },
+    "H1": {
+     "t": "f",
+     "f": "SORT(UNIQUE(A1:A3))",
+     "cached": {
+      "t": "s",
+      "v": "Plain text"
+     },
+     "array": "H1:H3"
+    },
+    "A2": {
+     "t": "s",
+     "v": "TRUE"
+    },
+    "B2": {
+     "t": "n",
+     "v": -12.5
+    },
+    "C2": {
+     "t": "b",
+     "v": false
+    },
+    "D2": {
+     "t": "d",
+     "v": "12:30"
+    },
+    "E2": {
+     "t": "e",
+     "v": "#N/A"
+    },
+    "F2": {
+     "t": "f",
+     "f": "SUM(B1:B3)",
+     "cached": {
+      "t": "n",
+      "v": 987.8
+     },
+     "array": null
+    },
+    "H2": {
+     "t": "s",
+     "v": "Quoted text"
+    },
+    "A3": {
+     "t": "s",
+     "v": "Plain text"
+    },
+    "B3": {
+     "t": "n",
+     "v": 1000
+    },
+    "D3": {
+     "t": "d",
+     "v": "2026-07-04T06:00"
+    },
+    "F3": {
+     "t": "f",
+     "f": "FtoC(212)",
+     "cached": {
+      "t": "n",
+      "v": 100
+     },
+     "array": null
+    },
+    "H3": {
+     "t": "b",
+     "v": true
+    },
+    "F4": {
+     "t": "f",
+     "f": "Rate*2",
+     "cached": {
+      "t": "n",
+      "v": 0.6
+     },
+     "array": null
+    }
+   },
+   "merges": [],
+   "tables": [],
+   "counts": {
+    "cf": 0,
+    "validations": 0,
+    "notes": 0,
+    "threads": 0,
+    "scenarios": 0,
+    "sparklines": 0,
+    "charts": 0,
+    "pivots": 0,
+    "slicers": 0,
+    "images": 0,
+    "shapes": 0,
+    "hyperlinks": 0
+   }
+  }
+ ]
+}

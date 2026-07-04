@@ -1,0 +1,21 @@
+{
+  "name": "gridmd",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GridMD reference parser + linter (spec: SPEC.md)",
+  "type": "module",
+  "bin": {
+    "gridmd-lint": "bin/gridmd-lint.js",
+    "gridmd2xlsx": "bin/gridmd2xlsx.js",
+    "xlsx2gridmd": "bin/xlsx2gridmd.js"
+  },
+  "scripts": {
+    "test": "node --test 'test/*.test.js'",
+    "lint:example": "node bin/gridmd-lint.js ../examples/quarterly-report.gmd",
+    "xlsx:example": "node bin/gridmd2xlsx.js ../examples/quarterly-report.gmd -o ../examples/quarterly-report.xlsx",
+    "roundtrip:example": "node bin/gridmd2xlsx.js ../examples/quarterly-report.gmd -o ../examples/quarterly-report.xlsx && node bin/xlsx2gridmd.js ../examples/quarterly-report.xlsx -o ../examples/quarterly-report.roundtrip.gmd && node bin/gridmd-lint.js ../examples/quarterly-report.roundtrip.gmd"
+  },
+  "dependencies": {
+    "yaml": "^2.5.0"
+  }
+}

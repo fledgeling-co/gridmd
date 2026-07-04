@@ -1,0 +1,135 @@
+{
+ "gridmd": "0.1",
+ "title": "Features fixture",
+ "dateSystem": 1900,
+ "names": [],
+ "sheets": [
+  {
+   "name": "Data",
+   "kind": "worksheet",
+   "hidden": false,
+   "freeze": null,
+   "protected": false,
+   "cells": {
+    "A1": {
+     "t": "s",
+     "v": "item"
+    },
+    "B1": {
+     "t": "s",
+     "v": "qty"
+    },
+    "C1": {
+     "t": "s",
+     "v": "status"
+    },
+    "A2": {
+     "t": "s",
+     "v": "Alpha"
+    },
+    "B2": {
+     "t": "n",
+     "v": 4
+    },
+    "C2": {
+     "t": "s",
+     "v": "open"
+    },
+    "F2": {
+     "t": "n",
+     "v": 1
+    },
+    "G2": {
+     "t": "n",
+     "v": 2
+    },
+    "H2": {
+     "t": "n",
+     "v": 3
+    },
+    "A3": {
+     "t": "s",
+     "v": "Beta"
+    },
+    "B3": {
+     "t": "n",
+     "v": 9
+    },
+    "C3": {
+     "t": "s",
+     "v": "done"
+    },
+    "F3": {
+     "t": "n",
+     "v": 3
+    },
+    "G3": {
+     "t": "n",
+     "v": 2
+    },
+    "H3": {
+     "t": "n",
+     "v": 1
+    },
+    "A4": {
+     "t": "s",
+     "v": "Gamma"
+    },
+    "B4": {
+     "t": "n",
+     "v": 2
+    },
+    "C4": {
+     "t": "s",
+     "v": "open"
+    },
+    "F4": {
+     "t": "n",
+     "v": 2
+    },
+    "G4": {
+     "t": "n",
+     "v": 2
+    },
+    "H4": {
+     "t": "n",
+     "v": 2
+    },
+    "B5": {
+     "t": "f",
+     "f": "SUBTOTAL(109,[qty])",
+     "cached": null,
+     "array": null
+    }
+   },
+   "merges": [],
+   "tables": [
+    {
+     "name": "Items",
+     "anchor": "A1",
+     "columns": [
+      "item",
+      "qty",
+      "status"
+     ],
+     "bodyRows": 3,
+     "hasTotals": true
+    }
+   ],
+   "counts": {
+    "cf": 3,
+    "validations": 1,
+    "notes": 0,
+    "threads": 1,
+    "scenarios": 1,
+    "sparklines": 1,
+    "charts": 1,
+    "pivots": 0,
+    "slicers": 0,
+    "images": 0,
+    "shapes": 0,
+    "hyperlinks": 0
+   }
+  }
+ ]
+}

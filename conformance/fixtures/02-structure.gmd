@@ -1,0 +1,40 @@
+---
+gridmd: "0.1"
+title: Structure fixture
+date-system: 1904
+styles:
+  hdr: { bold: true, fill: "#1F3FA6", color: "#FFFFFF" }
+---
+
+# Front
+
+```{sheet}
+freeze: B2
+cols:
+  A: 120
+rows:
+  1: { height: 32 }
+```
+
+@ A1:C1 { merge: true, style: hdr, align: center }
+@ A1 "Merged title"
+@ A3 "Linked" { link: "https://example.com", tip: "tip" }
+@ B3 42 { numfmt: "$#,##0.00", locked: false }
+@ B4
+  note: |
+    A cell note.
+@ C4 =B3*2 :: 84
+
+# Hidden
+
+```{sheet}
+hidden: true
+protect:
+  enabled: true
+  allow: [select-locked, select-unlocked]
+```
+
+```{grid} A1
+| a | 1 |
+| b | 2 |
+```
