@@ -1,0 +1,341 @@
+---
+gridmd: "0.1"
+title: Q3 Board Pack
+properties:
+  author: Luke Rhodes
+  company: Diolog
+  created: 2026-07-04
+date-system: 1900
+calc:
+  mode: auto
+theme:
+  colors: { accent1: "#1F3FA6", accent2: "#63BE7B", accent4: "#C0392B" }
+  fonts: { major: Inter, minor: Inter }
+names:
+  - { name: TaxRate, ref: "Assumptions!$B$2" }
+  - { name: FtoC, formula: "LAMBDA(F,(F-32)*5/9)" }
+  - { name: Regions, value: '{"AU","NZ","UK"}' }
+styles:
+  hdr:   { bold: true, color: "#FFFFFF", fill: accent1 }
+  money: { numfmt: "$#,##0.00" }
+  kpi:   { bold: true, size: 13 }
+protection:
+  structure: true
+---
+
+> Workbook-level blocks: a data query and an automation script.
+
+```{query} FxRates
+source: { url: "https://api.example.com/fx.csv", format: csv }
+steps:
+  - promote-headers: true
+  - filter: { col: currency, in: [USD, EUR, GBP] }
+  - rename: { col: rate_mid, to: rate }
+  - type: { col: rate, as: number }
+  - sort: { col: currency, order: asc }
+output: { table: FxRates, at: Data!A12 }
+refresh: on-open
+```
+
+```{script} tidy-headers lang=js
+on: manual
+---
+export default function run(wb) {
+  for (const sheet of wb.sheets()) sheet.trimHeaderWhitespace();
+}
+```
+
+```{raw} ooxml part="customXml/item1.xml"
+<opaque xmlns="urn:diolog:tags"><tag>board-pack</tag></opaque>
+```
+
+# Summary
+
+```{sheet}
+tab-color: accent1
+freeze: A3
+view: { zoom: 110, gridlines: false }
+cols:
+  A: 24
+  B: 150
+  "C:D": { width: 110 }
+```
+
+@ A1:F1 { merge: true, style: hdr, align: center }
+@ A1 "Q3 Board Pack — FY26"
+@ A2
+  rich:
+    - { text: "Prepared 4 Jul 2026 · ", color: "#5E6A82" }
+    - { text: "unaudited", italic: true, color: "#C0392B" }
+
+> KPI block — formulas carry cached values so a viewer needs no calc engine.
+
+@ B4 "Revenue" { style: kpi }
+@ C4 =SUM(Sales[total]) :: 2003.05 { style: money }
+@ B5 "Avg margin" { style: kpi }
+@ C5 =AVERAGE(Sales[margin]) :: 0.3771428571428571 { numfmt: "0.0%" }
+@ B6 "Tax due" { style: kpi }
+@ C6 =C4*TaxRate :: 600.915 { style: money }
+
+> A dynamic-array spill with its cached display results.
+
+@ B9 =SORT(UNIQUE(Sales[region])) { spill: B9:B11 }
+```{spill-cache} B9
+| AU |
+| NZ |
+| UK |
+```
+
+@ B13 "6-month trend by region" { bold: true }
+```{grid} B14
+| AU |
+| NZ |
+| UK |
+```
+
+```{sparklines} C14:C16
+type: line
+source: Data!B2:G4
+markers: { high: true, low: true }
+color: accent1
+```
+
+```{chart} combo "Revenue and margin by product" at F2:L14
+series:
+  - name: Revenue
+    cat: Sales[product]
+    val: Sales[total]
+    kind: column
+    color: accent1
+    labels: { show: true, position: outside-end, numfmt: "$#,##0" }
+    gap: 60
+    trendline: { type: linear, forecast: { forward: 1 }, equation: true, r2: true }
+    error-bars: { dir: both, type: percentage, value: 5, cap: true }
+  - name: Margin
+    val: Sales[margin]
+    kind: line
+    axis: y2
+    color: accent2
+    marker: circle
+axes:
+  x:  { title: "Product" }
+  y:  { title: "Revenue", min: 0, max: 700, unit: 100, gridlines: true, numfmt: "$#,##0" }
+  y2: { title: "Margin", numfmt: "0%", max: 0.6 }
+legend: { position: bottom }
+alt: "Columns of revenue per product with a margin line on a secondary axis."
+```
+
+```{pivot} RevenueByRegion at F16
+source: Sales
+rows:
+  - { field: region, sort: asc }
+cols:
+  - { field: quarter }
+values:
+  - { field: total, agg: sum, name: "Sum of total", numfmt: "$#,##0" }
+grand-totals: { rows: true, cols: true }
+layout: compact
+refresh: on-load
+```
+
+```{slicer} at M2 size 150x200
+for: Sales
+field: product
+```
+
+```{image} at M16 size 160x80
+src: assets/diolog-logo.png
+alt: "Diolog logo"
+```
+
+@ A20 "Source workbook" { link: "https://drive.example.com/q3-pack", tip: "Original upload" }
+
+```{page}
+orientation: landscape
+paper: A4
+margins: { top: 1.9, bottom: 1.9, left: 1.8, right: 1.8, header: 0.8, footer: 0.8 }
+fit: { width: 1, height: 0 }
+print-area: A1:M24
+header: { center: "&B Q3 Board Pack" }
+footer: { right: "Page &P of &N" }
+gridlines: false
+```
+
+# Sales
+
+```{sheet}
+tab-color: accent2
+freeze: A5
+cols:
+  A: 48
+  B: 140
+  "F:H": { width: 96 }
+```
+
+@ A1:C1 { merge: true }
+@ A1 "Sales detail — Q3" { bold: true, size: 13 }
+@ A2 "Filtered view: open + closed deals." { color: "#5E6A82" }
+
+```{table} Sales at A4
+style: medium-2
+banded: rows
+total:
+  product: "Total"
+  total: =SUBTOTAL(109,[total])
+cols:
+  qty:    { numfmt: "0" }
+  price:  { numfmt: "$#,##0.00" }
+  total:  { numfmt: "$#,##0.00" }
+  margin: { numfmt: "0%" }
+filter:
+  status: { values: [Open, Closed] }
+sort:
+  - { col: total, order: desc, by: value }
+---
+| id | product  | region | quarter | qty | price  | total                     | margin | status  |
+| 1  | Widget A | AU     | Q3      | 45  | 12.99  | =[@qty]*[@price] :: 584.55 | 0.45   | Closed  |
+| 2  | Widget B | NZ     | Q3      | 12  | 19.50  | =[@qty]*[@price] :: 234    | 0.32   | Open    |
+| 3  | Widget C | AU     | Q3      | 89  | 5.00   | =[@qty]*[@price] :: 445    | 0.38   | Closed  |
+| 4  | Widget D | UK     | Q3      | 4   | 100.00 | =[@qty]*[@price] :: 400    | 0.41   | Open    |
+| 5  | Widget E | UK     | Q3      | 10  | 15.00  | =[@qty]*[@price] :: 150    | 0.35   | Blocked |
+| 6  | Widget F | NZ     | Q3      | 50  | 1.99   | =[@qty]*[@price] :: 99.5   | 0.29   | Closed  |
+| 7  | Widget G | AU     | Q3      | 2   | 45.00  | =[@qty]*[@price] :: 90     | 0.44   | Open    |
+```
+
+```{cf} G5:G11
+- when: "> 500"
+  format: { fill: "#E7F6E7", color: "#0B8A00" }
+- bars: { color: accent1, gradient: true }
+```
+
+```{cf} E5:E11
+- icons: 3-arrows
+```
+
+```{cf} B5:B11
+- dupes: true
+  format: { fill: "#FFF4E5" }
+```
+
+```{validation} C5:C11
+type: list
+source: =Regions
+input: { title: "Region", message: "AU, NZ or UK." }
+error: { style: stop, title: "Invalid region", message: "Pick a listed region." }
+```
+
+```{validation} I5:I11
+type: list
+values: [Open, Closed, Blocked]
+```
+
+```{comments} G8
+- by: "Priya N"
+  at: 2026-07-02T09:14:00Z
+  text: "Widget D total looks high for 4 units — confirm the unit price."
+  resolved: true
+  replies:
+    - { by: "Luke R", at: 2026-07-02T09:31:00Z, text: "Confirmed — enterprise SKU at $100." }
+```
+
+# Assumptions
+
+```{sheet}
+tab-color: "#5E6A82"
+protect:
+  enabled: true
+  allow: [select-locked, select-unlocked]
+cols: { A: 160, B: 110 }
+```
+
+> Only the input cells are unlocked; everything else is read-only under sheet protection.
+
+@ A1 "Assumptions" { bold: true, size: 13 }
+@ A2 "Tax rate"
+@ B2 0.30 { numfmt: "0%", locked: false, fill: "#FFFDF0" }
+@ B2
+  note: |
+    Blended company rate agreed with finance, 12 Jun 2026.
+@ A3 "USD/AUD"
+@ B3 0.66 { numfmt: "0.0000", locked: false, fill: "#FFFDF0" }
+@ A4 "Volume growth"
+@ B4 0.08 { numfmt: "0.0%", locked: false, fill: "#FFFDF0" }
+@ A5 "Include forecast"
+@ B5 TRUE { control: checkbox, locked: false }
+
+@ A6 "Benchmark (MSFT)"
+@ B6
+  entity: { type: stock, id: "XNAS:MSFT", text: "MSFT" }
+  fields: { Price: 442.10, Currency: "USD" }
+@ C6 =B6.Price :: 442.1 { style: money }
+
+@ A8 =FtoC(100) :: 37.77777777777778 { numfmt: "0.0" }
+@ B8 "°C equivalent of 100 °F (via the FtoC LAMBDA)" { color: "#5E6A82" }
+
+```{scenario} Downside
+cells: { B3: 0.58, B4: -0.10 }
+comment: "FX -12%, volume shrinks 10%."
+```
+
+```{textbox} at D2 size 300x70
+text: |
+  Change inputs only in the yellow cells.
+  Everything else recalculates.
+font: { size: 11, color: "#5E6A82" }
+```
+
+# Data
+
+```{sheet}
+hidden: true
+```
+
+> Monthly revenue by region — source for the Summary sparklines.
+
+```{grid} A1
+| Region | Jan | Feb | Mar | Apr | May | Jun |
+| AU     | 320 | 340 | 355 | 361 | 380 | 402 |
+| NZ     | 88  | 91  | 95  | 99  | 104 | 108 |
+| UK     | 150 | 149 | 160 | 158 | 165 | 171 |
+```
+
+@ A1:G1 { style: hdr }
+
+```{outline}
+rows:
+  - { range: "2:4", level: 1, collapsed: false }
+```
+
+> Materialized output of the FxRates query (regenerated on refresh).
+
+```{table} FxRates at A12
+style: light-1
+cols:
+  rate: { numfmt: "0.0000" }
+---
+| currency | rate   |
+| EUR      | 0.6104 |
+| GBP      | 0.5182 |
+| USD      | 0.6600 |
+```
+
+# Revenue Chart
+
+```{sheet}
+kind: chart
+tab-color: accent4
+```
+
+> A chart sheet: no grid — exactly one primary chart anchored `at sheet`.
+
+```{chart} column "Revenue by region" at sheet
+series:
+  - name: Revenue
+    cat: Sales[region]
+    val: Sales[total]
+    color: accent1
+axes:
+  y: { title: "Revenue", numfmt: "$#,##0" }
+legend: { position: right }
+alt: "Full-page column chart of revenue by region."
+```

@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+*.xlsx
+!conformance/**/*.xlsx
+examples/quarterly-report.roundtrip.gmd
+go/gridmd
+rust/target/
+.build/
+.swiftpm/
+*.profraw
