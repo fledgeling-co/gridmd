@@ -59,6 +59,19 @@ swift/            Swift sources; root Package.swift for SPM (runner-built)
       Release; npm publish no-ops until NPM_TOKEN secret exists) + Makefile
       (`make setup` / `make test` / `make conformance`) + scripts/conformance.sh.
 
+## Post-migration pass (apply as soon as the TS runner lands — owner: main loop)
+
+1. **tsgo everywhere possible (Luke's directive 2026-07-05):** add
+   `@typescript/native-preview` devDep; `typecheck` script = `tsgo --noEmit`
+   (the fast native TS7 compiler), keep `typecheck:tsc` ONLY as fallback for
+   constructs tsgo can't handle yet. Try `tsgo` for declaration emit too
+   (`--emitDeclarationOnly`); if it can't yet, tsc stays for d.ts emit ONLY —
+   never for typechecking. CI js job runs tsgo typecheck before bun test.
+2. Fix the KNOWN BUG below in the migrated .ts importer.
+3. Re-run `make conformance` expecting all four implementations 11/11.
+4. Verify runner claims (bun test + coverage gate + built dist under plain
+   node), commit, push, then tag v0.1.0 to exercise release.yml.
+
 ## KNOWN BUG (fix in TS after the migration runner lands)
 
 `scripts/conformance.sh` cross-gate caught a real JS-reference defect the
