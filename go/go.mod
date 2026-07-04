@@ -1,5 +1,5 @@
 module github.com/lprhodes/grid-md/go
 
-go 1.26.4
+go 1.24
 
-require gopkg.in/yaml.v3 v3.0.1 // indirect
+require gopkg.in/yaml.v3 v3.0.1

@@ -53,11 +53,11 @@ const (
 
 // Target is a parsed @-directive/anchor target.
 type Target struct {
-	Kind  Kind
-	Sheet string // "" when unqualified
+	Kind     Kind
+	Sheet    string // "" when unqualified
 	HasSheet bool
-	C1, R1 int
-	C2, R2 int
+	C1, R1   int
+	C2, R2   int
 }
 
 var (
