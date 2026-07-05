@@ -55,8 +55,19 @@ jobs:
       - uses: actions/upload-artifact@v4
         with: { name: swift-macos, path: 'gridmd-swift-*' }
 
+  build-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install build && cd python && python -m build
+      - uses: actions/upload-artifact@v4
+        with: { name: python-dist, path: 'python/dist/*' }
+
   release:
-    needs: [build-go, build-rust, build-swift]
+    needs: [build-go, build-rust, build-swift, build-python]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -67,6 +78,8 @@ jobs:
             gridmd-go-*
             gridmd-rust-*
             gridmd-swift-*
+            gridmd-*.whl
+            gridmd-*.tar.gz
           generate_release_notes: true
 
   npm-publish:

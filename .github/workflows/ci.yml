@@ -52,6 +52,16 @@ jobs:
       - uses: actions/checkout@v4
       - run: swift test
 
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: cd python && pip install -e '.[dev]'
+      - run: cd python && coverage run -m pytest -q && coverage report --fail-under=100
+
   conformance:
     # The cross-language gate: every implementation satisfies the three laws
     # (conformance/README.md) on the same fixtures.
@@ -66,7 +76,11 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: rust
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - run: cd js && bun install
+      - run: cd python && python3 -m venv .venv && .venv/bin/pip install -e .
       - run: mkdir -p .bin && cd go && go build -o ../.bin/gridmd-go ./cmd/gridmd
       - run: cd rust && cargo build --release && cp target/release/gridmd ../.bin/gridmd-rust
       - run: swift build -c release && cp .build/release/gridmd .bin/gridmd-swift
@@ -76,4 +90,5 @@ jobs:
             js="scripts/gridmd-js.sh" \
             go=.bin/gridmd-go \
             rust=.bin/gridmd-rust \
-            swift=.bin/gridmd-swift
+            swift=.bin/gridmd-swift \
+            python="python/.venv/bin/python -m gridmd"
