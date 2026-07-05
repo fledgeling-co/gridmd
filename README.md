@@ -60,6 +60,199 @@ workbook. And a GridMD file renders acceptably in any Markdown viewer — headin
 are sheets, dense payloads remain readable as pipe rows, and directives are code
 fences.
 
+## A tour, simple to complex
+
+### 1 · The smallest workbook
+
+One sheet, three cells. `@ <ref> <value>` is the whole grammar you need:
+
+```gridmd
+---
+gridmd: "0.1"
+---
+
+# Sheet1
+
+@ A1 "Hello"
+@ B1 42
+@ C1 =B1*2 :: 84
+```
+
+`C1` shows the two-sided nature of a spreadsheet cell: the formula (`=B1*2`)
+**and** its cached result after ` :: ` (84), so a reader can display the sheet
+without a calculation engine — and a generator that *can't* compute simply
+omits the cache rather than guessing.
+
+### 2 · Types without ceremony
+
+Scalars are typed by shape, exactly the way you'd write them:
+
+```gridmd
+# Types
+
+@ A1 Plain text          # bare text
+@ A2 "TRUE"              # quoted → stays text
+@ A3 '0042               # leading apostrophe → forced text, Excel-style
+@ B1 -12.5               # number
+@ B2 TRUE                # boolean
+@ B3 2026-07-04          # date (ISO on disk; serial in .xlsx)
+@ B4 12:30               # time
+@ B5 #DIV/0!             # a real error value
+```
+
+### 3 · Formatting and merges
+
+Properties ride in a `{ … }` map at the end of the line; ranges format in one
+stroke; merging is a range property:
+
+```gridmd
+# Report
+
+@ A1:D1 { merge: true, align: center, bold: true, fill: "#1F3FA6", color: "#FFFFFF" }
+@ A1 "Quarterly Report"
+@ B3 45020.5 { numfmt: "$#,##0.00" }
+@ A3:A20 { bold: true }
+@ B4:B20 =B3*1.04        # relative fill: B5 gets =B4*1.04, and so on
+```
+
+### 4 · Dense data: tables
+
+Contiguous data goes in pipe rows. A `{table}` is a real Excel table — name,
+banding, filters, total row, and structured references that formulas can use:
+
+````gridmd
+# Sales
+
+```{table} Sales at A1
+style: medium-2
+total:
+  total: =SUBTOTAL(109,[total])
+cols:
+  price: { numfmt: "$#,##0.00" }
+---
+| item     | qty | price | total            |
+| Widget A | 45  | 12.99 | =[@qty]*[@price] |
+| Widget B | 12  | 19.50 | =[@qty]*[@price] |
+```
+
+@ F1 =SUM(Sales[total])
+````
+
+### 5 · The full surface
+
+Conditional formatting, validation, charts, pivots, sparklines, comments —
+each is a fenced directive with a YAML body:
+
+````gridmd
+# Dashboard
+
+```{cf} B2:B50
+- when: "> 1000"
+  format: { fill: "#E7F6E7" }
+- bars: { color: accent1 }
+- icons: 3-arrows
+```
+
+```{validation} C2:C50
+type: list
+values: [Open, Closed, Blocked]
+```
+
+```{chart} combo "Revenue vs margin" at E2:L18
+series:
+  - name: Revenue
+    cat: Sales[item]
+    val: Sales[total]
+    kind: column
+    trendline: { type: linear, forecast: { forward: 2 }, r2: true }
+  - name: Margin
+    val: Sales[margin]
+    kind: line
+    axis: y2
+legend: { position: bottom }
+```
+
+```{pivot} ByItem at N2
+source: Sales
+rows:
+  - { field: item }
+values:
+  - { field: total, agg: sum }
+```
+````
+
+Every one of these becomes the real thing in `.xlsx` — chartML/ChartEx parts,
+pivot caches with refresh-on-load, x14 sparkline groups — and converts back.
+The worked example [examples/quarterly-report.gmd](examples/quarterly-report.gmd)
+exercises nearly the whole catalog across five sheets.
+
+## When text isn't enough: the escape hatch
+
+GridMD's cardinal rule is **no silent loss**: whatever a converter meets, it
+either represents natively, **carries** verbatim, or fails loudly
+([INTEROP.md](INTEROP.md) fidelity classes F0–F3). Two mechanisms implement
+the "carry" path:
+
+**1 · `fallback:` inside a directive.** When a feature is *mostly*
+expressible but has exotic sub-options the grammar doesn't model (say, a
+chart with picture-fill series), the directive keeps the readable summary
+and attaches the exact source XML. A converter that fully understands the
+directive ignores the fallback; one that doesn't re-emits it untouched:
+
+````gridmd
+```{chart} column "Revenue" at E2:K16
+series:
+  - { name: Revenue, cat: Sales[item], val: Sales[total] }
+fallback:
+  ooxml: |
+    <c:chartSpace xmlns:c="…">…the exact original part…</c:chartSpace>
+```
+````
+
+**2 · `{raw}` blocks for whole foreign parts.** Features with no plain-text
+form at all — a VBA project, an OLE object, SmartArt — travel as opaque
+package parts, byte-preserved (base64 for binary) and re-emitted into the
+`.xlsx` at the exact part path they came from:
+
+````gridmd
+```{raw} ooxml part="xl/vbaProject.bin" encoding=base64
+UEsDBBQABgAIAAAAIQ…
+```
+````
+
+So a round trip through GridMD never destroys what it can't yet speak: the
+readable 99 % becomes reviewable text, and the rest rides along intact. (The
+same mechanism is how the Go/Rust/Swift/Python ports guarantee lossless
+round-trips while emitting a leaner native core than the TypeScript
+reference — they carry the original document in a custom part,
+`customXml/gridmdCarry.xml`.)
+
+Security note: carried parts are data, not trusted instructions — re-emitting
+them into a macro-enabled container requires explicit consent, and `part=`
+paths are canonicalized against package-part smuggling
+([INTEROP.md §5](INTEROP.md)).
+
+## Implementations
+
+Five implementations, one conformance contract
+([conformance/README.md](conformance/README.md)): byte-identical canonical
+dumps, identical rejection of invalid documents, and dump-stable
+`gmd → xlsx → gmd` round trips, all enforced in CI.
+
+| Directory | Language | Notes |
+|---|---|---|
+| [js/](js/) | TypeScript (Bun) | The semantic reference. 100 % line coverage; npm package `gridmd`; typechecked and declaration-emitted by tsgo. |
+| [go/](go/) | Go | `go install ./go/cmd/gridmd`; 99.8 % coverage. |
+| [rust/](rust/) | Rust | `cargo build --release` in `rust/`; 95 %+ coverage. |
+| [swift/](swift/) | Swift | SPM package (root `Package.swift`): `.library("GridMD")` + `gridmd` CLI. |
+| [python/](python/) | Python | `pip install -e python/`; PyYAML as the single dependency. |
+
+```bash
+make setup        # install all toolchains' deps
+make test         # every implementation's suite
+make conformance  # the cross-language gate (all three laws, all implementations)
+```
+
 ## Spec documents
 
 | File | Contents |
