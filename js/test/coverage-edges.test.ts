@@ -14,7 +14,7 @@ import type { ZipEntry } from '../src/xlsx/zip';
 import { createEvaluator, Unsupported } from '../src/calc';
 import type { WorkbookModel } from '../src/types';
 
-const doc = (body: string): string => `---\ngridmd: "0.1"\n---\n\n# S1\n\n${body}`;
+const doc = (body: string): string => `---\ngridmd: "1.0"\n---\n\n# S1\n\n${body}`;
 const modelOf = (src: string, baseDir = '.'): WorkbookModel => {
   const res = lint(src, { mode: 'strict' });
   assert.deepEqual(res.errors, [], `must lint clean: ${res.errors.map((e) => e.msg).join('; ')}`);
@@ -31,7 +31,7 @@ test('calc: tokenizer + evaluator error branches', () => {
   evalThrows('@ A1 =~', /unexpected character/);
   const errRef = doc('@ A1 #DIV/0!\n@ B1 =A1');
   assert.deepEqual(createEvaluator(modelOf(errRef)).evaluateCell('S1', 'B1'), { err: '#DIV/0!' });
-  const bad = `---\ngridmd: "0.1"\nnames:\n  - { name: Bad, formula: "LAMBDA(1,1)" }\n---\n\n# S1\n\n@ A1 =Bad(2)\n`;
+  const bad = `---\ngridmd: "1.0"\nnames:\n  - { name: Bad, formula: "LAMBDA(1,1)" }\n---\n\n# S1\n\n@ A1 =Bad(2)\n`;
   assert.throws(() => createEvaluator(modelOf(bad)).evaluateCell('S1', 'A1'), /LAMBDA parameter form/);
   const sum2d = doc('@ A1 1\n@ B1 2\n@ A2 3\n@ B2 4\n@ C1 =SUM(A1:B2)');
   assert.equal(createEvaluator(modelOf(sum2d)).evaluateCell('S1', 'C1'), 10); // flatNumbers recursion
@@ -52,12 +52,12 @@ test('validate: frontmatter + directive + sheet-order branches', () => {
   const warnsOf = (src: string): string[] => lint(src).warnings.map((e) => e.msg);
 
   assert.ok(errsOf('---\ngridmd: 0.1\n---\n\n# S1\n').some((m) => /MAJOR\.MINOR/.test(m)));
-  assert.ok(errsOf('---\ngridmd: "0.1"\ndate-system: 1999\n---\n\n# S1\n').some((m) => /date-system must be/.test(m)));
-  assert.ok(errsOf('---\ngridmd: "0.1"\nstyles: { s: 5 }\n---\n\n# S1\n').some((m) => /must be a mapping/.test(m)));
+  assert.ok(errsOf('---\ngridmd: "1.0"\ndate-system: 1999\n---\n\n# S1\n').some((m) => /date-system must be/.test(m)));
+  assert.ok(errsOf('---\ngridmd: "1.0"\nstyles: { s: 5 }\n---\n\n# S1\n').some((m) => /must be a mapping/.test(m)));
   assert.ok(errsOf(doc('```{cf} A1:A3\n- when: "> 1"\n  format: { fill: notacolour }\n```')).some((m) => /cf format\.fill: not a color/.test(m)));
   assert.ok(warnsOf(doc('```{chart} xyz at A1\nseries:\n  - { val: A1:A2 }\n```')).some((m) => /unknown chart type/.test(m)));
   assert.ok(errsOf(doc('```{cf} Other!A1:A3\n- dupes: true\n```')).some((m) => /must name the containing sheet/.test(m)));
-  assert.ok(warnsOf('---\ngridmd: "0.1"\n---\n\n# S1\n\n@ A1 1\n\n```{sheet}\nhidden: true\n```\n').some((m) => /should be the first block/.test(m)));
+  assert.ok(warnsOf('---\ngridmd: "1.0"\n---\n\n# S1\n\n@ A1 1\n\n```{sheet}\nhidden: true\n```\n').some((m) => /should be the first block/.test(m)));
   assert.ok(errsOf(doc('@ A1 5\n  value: 6\n')).some((m) => /inline content and body content/.test(m)));
   assert.ok(warnsOf(doc('@ A1:Z100000 =B1\n')).some((m) => /relative fill over/.test(m)));
 });
@@ -65,7 +65,7 @@ test('validate: frontmatter + directive + sheet-order branches', () => {
 // ---- model: {raw} without a part= ----
 
 test('model: workbook {raw} without part= is reported not-emitted', () => {
-  const res = lint('---\ngridmd: "0.1"\n---\n\n```{raw} ooxml\n<a/>\n```\n\n# S1\n');
+  const res = lint('---\ngridmd: "1.0"\n---\n\n```{raw} ooxml\n<a/>\n```\n\n# S1\n');
   assert.deepEqual(res.errors, []);
   const model = buildWorkbookModel(res.doc, { baseDir: '.' });
   assert.ok(model.report.some((r) => r.action === 'not-emitted' && r.note === 'no part= path'));
@@ -91,7 +91,7 @@ test('writer: standalone filter sort + unrecognized criterion + dead CF branches
 
 test('round-trip: rich styles, date/time serials, arrays, custom totals, validation ops', () => {
   const src = `---
-gridmd: "0.1"
+gridmd: "1.0"
 theme: { colors: { accent1: "#204080" } }
 ---
 

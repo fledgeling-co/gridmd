@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/lprhodes/grid-md/go/internal/model"
-	"github.com/lprhodes/grid-md/go/internal/parser"
+	"github.com/fledgling-co/gridmd/go/internal/model"
+	"github.com/fledgling-co/gridmd/go/internal/parser"
 )
 
 func dumpSrc(src string) string {
@@ -14,7 +14,7 @@ func dumpSrc(src string) string {
 
 func TestModelIntegration(t *testing.T) {
 	src := `---
-gridmd: "0.1"
+gridmd: "1.0"
 title: T
 date-system: 1904
 names:

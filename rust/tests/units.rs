@@ -19,7 +19,7 @@ use gridmd::{dump_source, lint};
 // ---------- helpers ----------
 
 fn s(body: &str) -> String {
-    format!("---\ngridmd: \"0.1\"\n---\n\n# S\n{body}\n")
+    format!("---\ngridmd: \"1.0\"\n---\n\n# S\n{body}\n")
 }
 fn errs(src: &str) -> Vec<String> {
     lint(src, Mode::Strict).errors.into_iter().map(|d| d.msg).collect()
@@ -245,7 +245,7 @@ fn parser_document_structure() {
     // missing frontmatter
     assert!(errs("no frontmatter").iter().any(|m| m.contains("must begin with")));
     // unterminated frontmatter
-    let d = parse_document("---\ngridmd: \"0.1\"\n# S\n", Mode::Strict);
+    let d = parse_document("---\ngridmd: \"1.0\"\n# S\n", Mode::Strict);
     assert!(d.errors.iter().any(|e| e.msg.contains("unterminated frontmatter")));
     // doc comments + level-2 headings are ignored
     no_err("> a comment\n## a subheading\n@ A1 1");
@@ -275,34 +275,34 @@ fn parser_document_structure() {
 fn validate_frontmatter() {
     assert!(errs("---\ngridmd: 0.1\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("gridmd:")));
     assert!(errs("---\nfoo: 1\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("gridmd:")));
-    assert!(warns(&format!("---\ngridmd: \"0.1\"\nunknownkey: 1\n---\n# S\n@ A1 1\n")).iter().any(|w| w.contains("unknown frontmatter key")));
-    assert!(errs("---\ngridmd: \"0.1\"\ndate-system: 1950\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("date-system")));
-    assert!(errs("---\ngridmd: \"0.1\"\ncalc: { mode: turbo }\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("calc.mode")));
-    assert!(errs("---\ngridmd: \"0.1\"\nnames:\n  - { name: X, ref: A1, formula: B1 }\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("exactly one of")));
-    assert!(errs("---\ngridmd: \"0.1\"\nnames:\n  - { foo: 1 }\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("require a name")));
-    assert!(errs("---\ngridmd: \"0.1\"\nnames:\n  - { name: X, ref: A1 }\n  - { name: x, ref: B1 }\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("duplicate defined name")));
-    assert!(errs("---\ngridmd: \"0.1\"\nstyles: { hdr: notamap }\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("must be a mapping")));
-    assert!(errs("---\ngridmd: \"0.1\"\ntheme: { colors: { accent1: red } }\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("#RRGGBB")));
-    assert!(warns("---\ngridmd: \"0.1\"\ntheme: { colors: { bogus: \"#FFFFFF\" } }\n---\n# S\n@ A1 1\n").iter().any(|w| w.contains("unknown theme color slot")));
+    assert!(warns(&format!("---\ngridmd: \"1.0\"\nunknownkey: 1\n---\n# S\n@ A1 1\n")).iter().any(|w| w.contains("unknown frontmatter key")));
+    assert!(errs("---\ngridmd: \"1.0\"\ndate-system: 1950\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("date-system")));
+    assert!(errs("---\ngridmd: \"1.0\"\ncalc: { mode: turbo }\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("calc.mode")));
+    assert!(errs("---\ngridmd: \"1.0\"\nnames:\n  - { name: X, ref: A1, formula: B1 }\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("exactly one of")));
+    assert!(errs("---\ngridmd: \"1.0\"\nnames:\n  - { foo: 1 }\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("require a name")));
+    assert!(errs("---\ngridmd: \"1.0\"\nnames:\n  - { name: X, ref: A1 }\n  - { name: x, ref: B1 }\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("duplicate defined name")));
+    assert!(errs("---\ngridmd: \"1.0\"\nstyles: { hdr: notamap }\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("must be a mapping")));
+    assert!(errs("---\ngridmd: \"1.0\"\ntheme: { colors: { accent1: red } }\n---\n# S\n@ A1 1\n").iter().any(|m| m.contains("#RRGGBB")));
+    assert!(warns("---\ngridmd: \"1.0\"\ntheme: { colors: { bogus: \"#FFFFFF\" } }\n---\n# S\n@ A1 1\n").iter().any(|w| w.contains("unknown theme color slot")));
 }
 
 // ---------- validate: workbook + sheet framing ----------
 
 #[test]
 fn validate_workbook_and_sheets() {
-    assert!(errs("---\ngridmd: \"0.1\"\n---\n@ A1 1\n").iter().any(|m| m.contains("not allowed before the first sheet")));
-    assert!(errs("---\ngridmd: \"0.1\"\n---\n@ A1 1\n").iter().any(|m| m.contains("at least one sheet")));
-    assert!(errs("---\ngridmd: \"0.1\"\n---\n```{bogus}\n```\n# S\n@ A1 1\n").iter().any(|m| m.contains("unknown directive")));
-    assert!(errs("---\ngridmd: \"0.1\"\n---\n```{grid} A1\n| a |\n```\n# S\n@ A2 1\n").iter().any(|m| m.contains("sheet-scoped")));
+    assert!(errs("---\ngridmd: \"1.0\"\n---\n@ A1 1\n").iter().any(|m| m.contains("not allowed before the first sheet")));
+    assert!(errs("---\ngridmd: \"1.0\"\n---\n@ A1 1\n").iter().any(|m| m.contains("at least one sheet")));
+    assert!(errs("---\ngridmd: \"1.0\"\n---\n```{bogus}\n```\n# S\n@ A1 1\n").iter().any(|m| m.contains("unknown directive")));
+    assert!(errs("---\ngridmd: \"1.0\"\n---\n```{grid} A1\n| a |\n```\n# S\n@ A2 1\n").iter().any(|m| m.contains("sheet-scoped")));
     // x- workbook block ignored
-    no_err_full("---\ngridmd: \"0.1\"\n---\n```{x-foo}\nx\n```\n# S\n@ A1 1\n");
+    no_err_full("---\ngridmd: \"1.0\"\n---\n```{x-foo}\nx\n```\n# S\n@ A1 1\n");
     // workbook query/script/raw ok
-    no_err_full("---\ngridmd: \"0.1\"\n---\n```{query} Q\nsource: { url: x }\n```\n# S\n@ A1 1\n");
+    no_err_full("---\ngridmd: \"1.0\"\n---\n```{query} Q\nsource: { url: x }\n```\n# S\n@ A1 1\n");
     // sheet name rules
-    assert!(errs("---\ngridmd: \"0.1\"\n---\n# A/B\n@ A1 1\n").iter().any(|m| m.contains("forbidden character")));
+    assert!(errs("---\ngridmd: \"1.0\"\n---\n# A/B\n@ A1 1\n").iter().any(|m| m.contains("forbidden character")));
     let long = "x".repeat(40);
-    assert!(errs(&format!("---\ngridmd: \"0.1\"\n---\n# {long}\n@ A1 1\n")).iter().any(|m| m.contains("exceeds 31")));
-    assert!(errs("---\ngridmd: \"0.1\"\n---\n# S\n@ A1 1\n# s\n@ A1 1\n").iter().any(|m| m.contains("duplicate sheet name")));
+    assert!(errs(&format!("---\ngridmd: \"1.0\"\n---\n# {long}\n@ A1 1\n")).iter().any(|m| m.contains("exceeds 31")));
+    assert!(errs("---\ngridmd: \"1.0\"\n---\n# S\n@ A1 1\n# s\n@ A1 1\n").iter().any(|m| m.contains("duplicate sheet name")));
 }
 fn no_err_full(src: &str) {
     assert!(errs(src).is_empty(), "unexpected errors: {:?}", errs(src));
@@ -452,7 +452,7 @@ fn model_translate_and_bodies() {
 
     // style extend resolution (expand_patch → resolve_style recursion)
     let styled = format!(
-        "---\ngridmd: \"0.1\"\nstyles:\n  base: {{ bold: true }}\n  hdr: {{ extend: base, italic: true }}\n---\n\n# S\n@ A1:B1 {{ merge: true, style: hdr }}\n@ A1 \"x\"\n"
+        "---\ngridmd: \"1.0\"\nstyles:\n  base: {{ bold: true }}\n  hdr: {{ extend: base, italic: true }}\n---\n\n# S\n@ A1:B1 {{ merge: true, style: hdr }}\n@ A1 \"x\"\n"
     );
     let sm = model_of(&styled);
     assert_eq!(sm.sheets[0].merges.len(), 1);

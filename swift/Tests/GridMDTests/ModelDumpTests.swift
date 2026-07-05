@@ -2,7 +2,7 @@ import XCTest
 @testable import GridMD
 
 final class ModelDumpTests: XCTestCase {
-    func dump(_ body: String) throws -> String { try GridMD.dump("---\ngridmd: \"0.1\"\ntitle: T\n---\n# S\n\(body)") }
+    func dump(_ body: String) throws -> String { try GridMD.dump("---\ngridmd: \"1.0\"\ntitle: T\n---\n# S\n\(body)") }
 
     func testBodyContentForms() throws {
         let d = try dump("""
@@ -81,7 +81,7 @@ final class ModelDumpTests: XCTestCase {
     func testChartSheetHasNoCells() throws {
         let d = try GridMD.dump("""
         ---
-        gridmd: "0.1"
+        gridmd: "1.0"
         ---
         # Chart
         ```{sheet}
@@ -100,7 +100,7 @@ final class ModelDumpTests: XCTestCase {
     func testHiddenVeryAndProtected() throws {
         let d = try GridMD.dump("""
         ---
-        gridmd: "0.1"
+        gridmd: "1.0"
         ---
         # S
         ```{sheet}

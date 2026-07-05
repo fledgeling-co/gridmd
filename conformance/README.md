@@ -25,7 +25,7 @@ defines the format. Shape:
 
 ```jsonc
 {
- "gridmd": "0.1",
+ "gridmd": "1.0",
  "title": "…" | null,
  "dateSystem": 1900 | 1904,
  "names": [ { "name", "ref"|null, "formula"|null, "value"|null } ],  // sorted by name

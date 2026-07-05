@@ -6,9 +6,9 @@ import (
 	"encoding/binary"
 	"testing"
 
-	"github.com/lprhodes/grid-md/go/internal/model"
-	"github.com/lprhodes/grid-md/go/internal/parser"
-	"github.com/lprhodes/grid-md/go/internal/xlsxwrite"
+	"github.com/fledgling-co/gridmd/go/internal/model"
+	"github.com/fledgling-co/gridmd/go/internal/parser"
+	"github.com/fledgling-co/gridmd/go/internal/xlsxwrite"
 )
 
 func zipWith(name, content string) []byte {
@@ -32,7 +32,7 @@ func storeZip(name, content string) []byte {
 }
 
 func TestReadRoundTrip(t *testing.T) {
-	src := "---\ngridmd: \"0.1\"\n---\n# S\n@ A1 5\n"
+	src := "---\ngridmd: \"1.0\"\n---\n# S\n@ A1 5\n"
 	wb := model.Build(parser.Parse(src, "strict"))
 	data, _, err := xlsxwrite.Write(wb, []byte(src))
 	if err != nil {

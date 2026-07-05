@@ -4,8 +4,8 @@ import PackageDescription
 // Root SPM manifest so the GridMD Swift implementation is consumable straight
 // from the repository URL:
 //
-//   .package(url: "https://github.com/…/grid-md.git", branch: "main")
-//   → .product(name: "GridMD", package: "grid-md")   // the library
+//   .package(url: "https://github.com/fledgling-co/gridmd.git", branch: "main")
+//   → .product(name: "GridMD", package: "gridmd")   // the library
 //
 // The library is pure Swift + Foundation (+ the system `Compression`
 // framework for DEFLATE reads); no third-party dependencies, so a fresh clone

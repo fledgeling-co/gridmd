@@ -7,5 +7,6 @@ examples/quarterly-report.roundtrip.gmd
 go/gridmd
 rust/target/
 .build/
+.bin/
 .swiftpm/
 *.profraw

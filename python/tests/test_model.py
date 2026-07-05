@@ -8,7 +8,7 @@ from gridmd.parser import parse_document
 
 
 def _model(body_lines: str):
-    src = '---\ngridmd: "0.1"\n---\n# S\n' + body_lines
+    src = '---\ngridmd: "1.0"\n---\n# S\n' + body_lines
     result = lint(src)
     assert result.errors == [], result.errors
     return build_workbook_model(result.doc).sheets[0]
@@ -17,7 +17,7 @@ def _model(body_lines: str):
 def _raw(body_lines: str):
     """Materialize an UNVALIDATED document — exercises the model's defensive
     guards for malformed blocks that strict lint would otherwise reject."""
-    doc = parse_document('---\ngridmd: "0.1"\n---\n# S\n' + body_lines)
+    doc = parse_document('---\ngridmd: "1.0"\n---\n# S\n' + body_lines)
     return build_workbook_model(doc).sheets[0]
 
 

@@ -50,13 +50,13 @@ final class ParserTests: XCTestCase {
 
     func testFrontmatterErrors() {
         XCTAssertFalse(Parser.parseDocument("no frontmatter").errors.isEmpty)
-        XCTAssertFalse(Parser.parseDocument("---\ngridmd: \"0.1\"\n").errors.isEmpty) // unterminated
+        XCTAssertFalse(Parser.parseDocument("---\ngridmd: \"1.0\"\n").errors.isEmpty) // unterminated
     }
 
     func testDocStructure() {
         let src = """
         ---
-        gridmd: "0.1"
+        gridmd: "1.0"
         ---
 
         > a doc comment
@@ -77,7 +77,7 @@ final class ParserTests: XCTestCase {
     func testMultilineAtBody() {
         let src = """
         ---
-        gridmd: "0.1"
+        gridmd: "1.0"
         ---
         # S
         @ B4
@@ -92,18 +92,18 @@ final class ParserTests: XCTestCase {
     }
 
     func testUnclosedFenceAndUnrecognized() {
-        let strict = Parser.parseDocument("---\ngridmd: \"0.1\"\n---\n# S\n```{grid} A1\n| 1 |")
+        let strict = Parser.parseDocument("---\ngridmd: \"1.0\"\n---\n# S\n```{grid} A1\n| 1 |")
         XCTAssertTrue(strict.errors.contains { $0.msg.contains("unclosed") })
-        let lenient = Parser.parseDocument("---\ngridmd: \"0.1\"\n---\n# S\nbogus line", mode: "lenient")
+        let lenient = Parser.parseDocument("---\ngridmd: \"1.0\"\n---\n# S\nbogus line", mode: "lenient")
         XCTAssertTrue(lenient.errors.isEmpty)
         XCTAssertFalse(lenient.warnings.isEmpty)
-        let strict2 = Parser.parseDocument("---\ngridmd: \"0.1\"\n---\n# S\nbogus line")
+        let strict2 = Parser.parseDocument("---\ngridmd: \"1.0\"\n---\n# S\nbogus line")
         XCTAssertFalse(strict2.errors.isEmpty)
     }
 
     func testProsSplitInlineBrace() {
         // @ target { ...props } (inline flow-map props, no scalar)
-        let doc = Parser.parseDocument("---\ngridmd: \"0.1\"\n---\n# S\n@ C7 { fill: \"#FDECEC\" }")
+        let doc = Parser.parseDocument("---\ngridmd: \"1.0\"\n---\n# S\n@ C7 { fill: \"#FDECEC\" }")
         guard case let .at(a) = doc.sheets[0].blocks[0] else { return XCTFail() }
         XCTAssertEqual(a.props?["fill"], .string("#FDECEC"))
         XCTAssertNil(a.scalarText)

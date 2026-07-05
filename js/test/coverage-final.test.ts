@@ -15,7 +15,7 @@ import type { ZipEntry } from '../src/xlsx/zip';
 import { createEvaluator } from '../src/calc';
 import type { WorkbookModel } from '../src/types';
 
-const doc = (body: string): string => `---\ngridmd: "0.1"\n---\n\n# S1\n\n${body}`;
+const doc = (body: string): string => `---\ngridmd: "1.0"\n---\n\n# S1\n\n${body}`;
 const modelOf = (src: string): WorkbookModel => {
   const res = lint(src, { mode: 'strict' });
   assert.deepEqual(res.errors, [], `must lint clean: ${res.errors.map((e) => e.msg).join('; ')}`);
@@ -32,7 +32,7 @@ function patch(buffer: Buffer, edits: (parts: Map<string, Buffer>) => void): Buf
 //      throws in toJS) ----
 
 test('parser: unresolved alias makes toJS throw (both parse paths)', () => {
-  const d = parseDocument('---\ngridmd: "0.1"\n---\n\n# S1\n\n```{page}\na: *undef\n```\n');
+  const d = parseDocument('---\ngridmd: "1.0"\n---\n\n# S1\n\n```{page}\na: *undef\n```\n');
   assert.ok(d.errors.some((e) => /YAML: /.test(e.msg))); // toJS catch pushed a YAML error
   assert.equal(tryProps('a: *undef'), null);             // tryProps catch → null
 });
@@ -47,7 +47,7 @@ test('calc: evaluateFormula seam + CONCATENATE/LEN', () => {
 });
 
 test('calc: non-LAMBDA formula name (referenced and mis-called)', () => {
-  const src = `---\ngridmd: "0.1"\nnames:\n  - { name: Plain, formula: "S1!A1*2" }\n---\n\n# S1\n\n@ A1 5\n@ B1 =Plain\n@ B2 =Plain(1)\n`;
+  const src = `---\ngridmd: "1.0"\nnames:\n  - { name: Plain, formula: "S1!A1*2" }\n---\n\n# S1\n\n@ A1 5\n@ B1 =Plain\n@ B2 =Plain(1)\n`;
   const ev = createEvaluator(modelOf(src));
   assert.equal(ev.evaluateCell('S1', 'B1'), 10);                 // formula name, no args
   assert.throws(() => ev.evaluateCell('S1', 'B2'), /call of non-LAMBDA/); // formula name, called
@@ -95,7 +95,7 @@ test('round-trip: chart series with a name-ref', () => {
 // ---- reader: carried malformed pivot + slicer (external forms) ----
 
 test('reader: malformed pivot and slicer parts are carried', () => {
-  const src = `---\ngridmd: "0.1"\n---\n\n# Data\n\n\`\`\`{table} Sales at A1\n---\n| region | amount |\n| AU | 10 |\n| NZ | 20 |\n\`\`\`\n\n\`\`\`{pivot} P at E1\nsource: Sales\nrows:\n  - { field: region }\nvalues:\n  - { field: amount, agg: sum }\n\`\`\`\n\n\`\`\`{slicer} at H1\nfor: Sales\nfield: region\n\`\`\`\n`;
+  const src = `---\ngridmd: "1.0"\n---\n\n# Data\n\n\`\`\`{table} Sales at A1\n---\n| region | amount |\n| AU | 10 |\n| NZ | 20 |\n\`\`\`\n\n\`\`\`{pivot} P at E1\nsource: Sales\nrows:\n  - { field: region }\nvalues:\n  - { field: amount, agg: sum }\n\`\`\`\n\n\`\`\`{slicer} at H1\nfor: Sales\nfield: region\n\`\`\`\n`;
   const base = writeXlsx(modelOf(src)).buffer;
   const patched = patch(base, (parts) => {
     for (const name of [...parts.keys()]) {

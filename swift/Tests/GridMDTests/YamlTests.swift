@@ -8,8 +8,8 @@ final class YamlTests: XCTestCase {
     }
 
     func testBlockMapTypes() {
-        let v = Yaml.parse("gridmd: \"0.1\"\ndate-system: 1904\nflag: true\nx: null\nf: 0.6\nname: Q3 Board Pack").value
-        XCTAssertEqual(v["gridmd"], .string("0.1"))
+        let v = Yaml.parse("gridmd: \"1.0\"\ndate-system: 1904\nflag: true\nx: null\nf: 0.6\nname: Q3 Board Pack").value
+        XCTAssertEqual(v["gridmd"], .string("1.0"))
         XCTAssertEqual(v["date-system"], .int(1904))
         XCTAssertEqual(v["flag"], .bool(true))
         XCTAssertEqual(v["x"], .null)

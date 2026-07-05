@@ -9,11 +9,11 @@ from gridmd.validate import (
 )
 
 
-def errs(body: str, front: str = 'gridmd: "0.1"') -> list[str]:
+def errs(body: str, front: str = 'gridmd: "1.0"') -> list[str]:
     return [e.msg for e in lint(f"---\n{front}\n---\n# S\n{body}").errors]
 
 
-def warns(body: str, front: str = 'gridmd: "0.1"') -> list[str]:
+def warns(body: str, front: str = 'gridmd: "1.0"') -> list[str]:
     return [w.msg for w in lint(f"---\n{front}\n---\n# S\n{body}").warnings]
 
 
@@ -54,48 +54,48 @@ def test_frontmatter_gridmd_required():
 
 
 def test_frontmatter_unknown_key_warns():
-    assert has(warns("@ A1 1\n", front='gridmd: "0.1"\nbogus: 1'), "unknown frontmatter key")
+    assert has(warns("@ A1 1\n", front='gridmd: "1.0"\nbogus: 1'), "unknown frontmatter key")
 
 
 def test_frontmatter_date_system_bad():
-    assert has(errs("@ A1 1\n", front='gridmd: "0.1"\ndate-system: 1899'), "date-system must be")
+    assert has(errs("@ A1 1\n", front='gridmd: "1.0"\ndate-system: 1899'), "date-system must be")
 
 
 def test_frontmatter_calc_mode_bad():
-    assert has(errs("@ A1 1\n", front='gridmd: "0.1"\ncalc: { mode: weird }'), "calc.mode must be")
+    assert has(errs("@ A1 1\n", front='gridmd: "1.0"\ncalc: { mode: weird }'), "calc.mode must be")
 
 
 def test_frontmatter_names_variants():
-    assert has(errs("@ A1 1\n", front='gridmd: "0.1"\nnames:\n  - 5'), "names entries require a name")
-    assert has(errs("@ A1 1\n", front='gridmd: "0.1"\nnames:\n  - { name: A }'), "exactly one of")
-    dup = 'gridmd: "0.1"\nnames:\n  - { name: A, ref: S!A1 }\n  - { name: A, formula: X }'
+    assert has(errs("@ A1 1\n", front='gridmd: "1.0"\nnames:\n  - 5'), "names entries require a name")
+    assert has(errs("@ A1 1\n", front='gridmd: "1.0"\nnames:\n  - { name: A }'), "exactly one of")
+    dup = 'gridmd: "1.0"\nnames:\n  - { name: A, ref: S!A1 }\n  - { name: A, formula: X }'
     assert has(errs("@ A1 1\n", front=dup), "duplicate defined name")
 
 
 def test_frontmatter_style_not_mapping():
-    assert has(errs("@ A1 1\n", front='gridmd: "0.1"\nstyles:\n  h: 5'), "must be a mapping")
+    assert has(errs("@ A1 1\n", front='gridmd: "1.0"\nstyles:\n  h: 5'), "must be a mapping")
 
 
 def test_frontmatter_theme_colors():
-    assert has(warns("@ A1 1\n", front='gridmd: "0.1"\ntheme: { colors: { weird: "#FFFFFF" } }'), "unknown theme color slot")
-    assert has(errs("@ A1 1\n", front='gridmd: "0.1"\ntheme: { colors: { accent1: red } }'), "must be #RRGGBB")
+    assert has(warns("@ A1 1\n", front='gridmd: "1.0"\ntheme: { colors: { weird: "#FFFFFF" } }'), "unknown theme color slot")
+    assert has(errs("@ A1 1\n", front='gridmd: "1.0"\ntheme: { colors: { accent1: red } }'), "must be #RRGGBB")
 
 
 # ---- sheets ----
 def test_zero_sheets():
-    assert has(full_errs('---\ngridmd: "0.1"\n---\n'), "requires at least one sheet")
+    assert has(full_errs('---\ngridmd: "1.0"\n---\n'), "requires at least one sheet")
 
 
 def test_sheet_name_too_long():
-    assert has(full_errs('---\ngridmd: "0.1"\n---\n# ' + "x" * 32 + "\n@ A1 1\n"), "exceeds 31 chars")
+    assert has(full_errs('---\ngridmd: "1.0"\n---\n# ' + "x" * 32 + "\n@ A1 1\n"), "exceeds 31 chars")
 
 
 def test_sheet_name_forbidden_char():
-    assert has(full_errs('---\ngridmd: "0.1"\n---\n# Bad:Name\n@ A1 1\n'), "forbidden character")
+    assert has(full_errs('---\ngridmd: "1.0"\n---\n# Bad:Name\n@ A1 1\n'), "forbidden character")
 
 
 def test_duplicate_sheet_name():
-    assert has(full_errs('---\ngridmd: "0.1"\n---\n# S\n@ A1 1\n# s\n@ A1 1\n'), "duplicate sheet name")
+    assert has(full_errs('---\ngridmd: "1.0"\n---\n# S\n@ A1 1\n# s\n@ A1 1\n'), "duplicate sheet name")
 
 
 # ---- grid ----
@@ -255,26 +255,26 @@ def test_raw_sheet_scope():
 
 # ---- workbook-level ----
 def test_at_before_sheet():
-    assert has(full_errs('---\ngridmd: "0.1"\n---\n@ A1 1\n# S\n@ A1 1\n'), "not allowed before the first sheet")
+    assert has(full_errs('---\ngridmd: "1.0"\n---\n@ A1 1\n# S\n@ A1 1\n'), "not allowed before the first sheet")
 
 
 def test_unknown_directive_workbook():
-    assert has(full_errs('---\ngridmd: "0.1"\n---\n```{bogus}\nx\n```\n# S\n@ A1 1\n'), "unknown directive")
+    assert has(full_errs('---\ngridmd: "1.0"\n---\n```{bogus}\nx\n```\n# S\n@ A1 1\n'), "unknown directive")
 
 
 def test_sheet_scoped_before_sheet():
-    src = '---\ngridmd: "0.1"\n---\n```{grid} A1\n| 1 |\n```\n# S\n@ A1 1\n'
+    src = '---\ngridmd: "1.0"\n---\n```{grid} A1\n| 1 |\n```\n# S\n@ A1 1\n'
     assert has(full_errs(src), "sheet-scoped and cannot appear before the first sheet")
 
 
 def test_x_kind_workbook_skipped():
-    src = '---\ngridmd: "0.1"\n---\n```{x-thing}\nopaque\n```\n# S\n@ A1 1\n'
+    src = '---\ngridmd: "1.0"\n---\n```{x-thing}\nopaque\n```\n# S\n@ A1 1\n'
     assert full_errs(src) == []
 
 
 def test_workbook_query_script_raw_valid():
     src = (
-        '---\ngridmd: "0.1"\n---\n'
+        '---\ngridmd: "1.0"\n---\n'
         "```{query} Q\nsource: { url: x }\nsteps: []\n```\n"
         "```{script} Sc lang=js\non: manual\n---\ncode();\n```\n"
         '```{raw} ooxml part="a.xml"\n<x/>\n```\n'
@@ -284,10 +284,10 @@ def test_workbook_query_script_raw_valid():
 
 
 def test_workbook_query_script_errors():
-    assert has(full_errs('---\ngridmd: "0.1"\n---\n```{query}\nsteps: 5\n```\n# S\n@ A1 1\n'), "requires a name")
-    assert has(full_errs('---\ngridmd: "0.1"\n---\n```{query} Q\nsteps: 5\n```\n# S\n@ A1 1\n'), "steps: must be a list")
-    assert has(full_errs('---\ngridmd: "0.1"\n---\n```{script} S\n---\ncode\n```\n# S\n@ A1 1\n'), "requires lang=")
-    assert has(full_errs('---\ngridmd: "0.1"\n---\n```{script} S lang=js\n```\n# S\n@ A1 1\n'), "requires a code payload")
+    assert has(full_errs('---\ngridmd: "1.0"\n---\n```{query}\nsteps: 5\n```\n# S\n@ A1 1\n'), "requires a name")
+    assert has(full_errs('---\ngridmd: "1.0"\n---\n```{query} Q\nsteps: 5\n```\n# S\n@ A1 1\n'), "steps: must be a list")
+    assert has(full_errs('---\ngridmd: "1.0"\n---\n```{script} S\n---\ncode\n```\n# S\n@ A1 1\n'), "requires lang=")
+    assert has(full_errs('---\ngridmd: "1.0"\n---\n```{script} S lang=js\n```\n# S\n@ A1 1\n'), "requires a code payload")
 
 
 # ---- @ directive semantics ----
@@ -372,20 +372,20 @@ def test_sheet_block_not_first_warns():
 
 # ---- chart sheets ----
 def test_chart_sheet_requires_one_chart():
-    src = '---\ngridmd: "0.1"\n---\n# S\n```{sheet}\nkind: chart\n```\n'
+    src = '---\ngridmd: "1.0"\n---\n# S\n```{sheet}\nkind: chart\n```\n'
     assert has(full_errs(src), "requires exactly one")
 
 
 def test_chart_sheet_no_grid_content():
     src = (
-        '---\ngridmd: "0.1"\n---\n# S\n```{sheet}\nkind: chart\n```\n'
+        '---\ngridmd: "1.0"\n---\n# S\n```{sheet}\nkind: chart\n```\n'
         '```{chart} column at sheet\nseries:\n  - { val: A1 }\n```\n@ A1 5\n'
     )
     assert has(full_errs(src), "cannot carry worksheet grid content")
 
 
 def test_at_sheet_chart_requires_chart_kind():
-    src = '---\ngridmd: "0.1"\n---\n# S\n```{chart} column at sheet\nseries:\n  - { val: A1 }\n```\n'
+    src = '---\ngridmd: "1.0"\n---\n# S\n```{chart} column at sheet\nseries:\n  - { val: A1 }\n```\n'
     assert has(full_errs(src), "require {sheet} kind: chart")
 
 

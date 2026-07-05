@@ -1,4 +1,4 @@
-module github.com/lprhodes/grid-md/go
+module github.com/fledgling-co/gridmd/go
 
 go 1.24
 

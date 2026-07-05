@@ -17,7 +17,7 @@ from .validate import validate_document
 from .xlsxread import ImportReport, xlsx_to_gridmd
 from .xlsxwrite import write_xlsx
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 __all__ = [
     "lint",

@@ -40,7 +40,7 @@ def test_iso_to_serial_dates_and_times():
 # ---- writer cell types ----
 def test_writer_emits_all_cell_types():
     src = (
-        '---\ngridmd: "0.1"\n---\n# S\n'
+        '---\ngridmd: "1.0"\n---\n# S\n'
         "@ A1 42\n@ A2 TRUE\n@ A3 #DIV/0!\n@ A4 2026-07-04\n@ A5 12:30\n@ A6 hello\n"
         '@ A7 =B1*2 :: 5\n@ A8 =B1 :: "text"\n@ A9 =B1 :: TRUE\n@ A10 =B1 :: #N/A\n'
         "@ A11 =B1\n@ A12 =B1 :: 2026-07-04\n"
@@ -64,7 +64,7 @@ def test_writer_emits_all_cell_types():
 
 def test_writer_merges_and_hidden_states():
     src = (
-        '---\ngridmd: "0.1"\n---\n# Visible\n@ A1:B1 { merge: true }\n@ A1 1\n'
+        '---\ngridmd: "1.0"\n---\n# Visible\n@ A1:B1 { merge: true }\n@ A1 1\n'
         "# Hidden\n```{sheet}\nhidden: true\n```\n@ A1 1\n"
         "# Gone\n```{sheet}\nhidden: very\n```\n@ A1 1\n"
     )
@@ -78,7 +78,7 @@ def test_writer_merges_and_hidden_states():
 
 def test_writer_report_lists_carried_features():
     src = (
-        '---\ngridmd: "0.1"\n---\n# S\n@ A1 1\n'
+        '---\ngridmd: "1.0"\n---\n# S\n@ A1 1\n'
         '```{comments} A1\n- { by: x, at: y, text: z }\n```\n'
     )
     result = lint(src)
@@ -97,7 +97,7 @@ def test_cached_helpers_defensive():
 
 # ---- carry round-trip ----
 def test_carry_restore_is_verbatim():
-    src = '---\ngridmd: "0.1"\n---\n# S\n@ A1 "héllo — x"\n'
+    src = '---\ngridmd: "1.0"\n---\n# S\n@ A1 "héllo — x"\n'
     buf, _ = _xlsx_from(src)
     restored, report = xlsx_to_gridmd(buf)
     assert restored == src

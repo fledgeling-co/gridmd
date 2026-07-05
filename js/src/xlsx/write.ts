@@ -293,7 +293,7 @@ export function writeXlsx(model: WorkbookModel): WriteResult {
     addPart(rp.part, data, null);
   }
   if (carryList.length) {
-    const json = JSON.stringify({ gridmd: fm.gridmd ?? '0.1', carried: carryList }, null, 1);
+    const json = JSON.stringify({ gridmd: fm.gridmd ?? '1.0', carried: carryList }, null, 1);
     addPart('customXml/gridmdCarry1.xml', `${XMLDECL}<gridmdCarry xmlns="urn:gridmd:carry">${esc(json)}</gridmdCarry>`, null);
   }
 

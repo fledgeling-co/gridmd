@@ -10,7 +10,7 @@ from gridmd.model import Sheet, WorkbookModel
 
 
 def _dump(body: str) -> str:
-    return dump('---\ngridmd: "0.1"\n---\n# S\n' + body)
+    return dump('---\ngridmd: "1.0"\n---\n# S\n' + body)
 
 
 def test_string_escaping():
@@ -39,7 +39,7 @@ def test_number_in_dump():
 def test_names_value_stringify():
     src = (
         "---\n"
-        'gridmd: "0.1"\n'
+        'gridmd: "1.0"\n'
         "names:\n"
         "  - { name: A, value: 42 }\n"
         "  - { name: B, value: true }\n"
@@ -68,18 +68,18 @@ def test_rich_missing_text_treated_as_empty():
     from gridmd.model import Cell, CellContent
 
     sheet.cells["1,1"] = Cell(col=1, row=1, content=CellContent(rich=[{"color": "#000"}, {"text": "b"}]))
-    out = dump_model(WorkbookModel(fm={"gridmd": "0.1"}, sheets=[sheet]))
+    out = dump_model(WorkbookModel(fm={"gridmd": "1.0"}, sheets=[sheet]))
     assert '"t": "rich"' in out and '"v": "b"' in out
 
 
 def test_dump_roundtrips_via_lint():
-    result = lint('---\ngridmd: "0.1"\n---\n# S\n@ A1 1\n')
+    result = lint('---\ngridmd: "1.0"\n---\n# S\n@ A1 1\n')
     assert dump_model(build_workbook_model(result.doc)).endswith("}\n")
 
 
 def test_names_null_value_and_non_dict_entries():
     # value present-but-null → String(null) == "null"; a non-dict entry is skipped
-    model = WorkbookModel(fm={"gridmd": "0.1", "names": [5, {"name": "A", "value": None}]}, sheets=[])
+    model = WorkbookModel(fm={"gridmd": "1.0", "names": [5, {"name": "A", "value": None}]}, sheets=[])
     out = dump_model(model)
     assert '"value": "null"' in out
     assert '"name": "A"' in out

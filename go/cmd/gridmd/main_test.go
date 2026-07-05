@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/lprhodes/grid-md/go/internal/model"
-	"github.com/lprhodes/grid-md/go/internal/parser"
-	"github.com/lprhodes/grid-md/go/internal/xlsxwrite"
+	"github.com/fledgling-co/gridmd/go/internal/model"
+	"github.com/fledgling-co/gridmd/go/internal/parser"
+	"github.com/fledgling-co/gridmd/go/internal/xlsxwrite"
 )
 
 // buildXlsxCarrying returns an .xlsx whose carry part holds carrySource (which
@@ -44,7 +44,7 @@ func write(t *testing.T, dir, name, content string) string {
 	return p
 }
 
-const doc = "---\ngridmd: \"0.1\"\n---\n# S\n@ A1 5\n@ B1 =A1*2 :: 10\n"
+const doc = "---\ngridmd: \"1.0\"\n---\n# S\n@ A1 5\n@ B1 =A1*2 :: 10\n"
 
 func TestParseArgs(t *testing.T) {
 	p := parseArgs([]string{"file.gmd", "-o", "out.xlsx", "--strict", "--unknown", "extra"})
@@ -91,7 +91,7 @@ func TestRunDump(t *testing.T) {
 	dir := t.TempDir()
 	good := write(t, dir, "good.gmd", doc)
 	code, out, _ := run(t, "dump", good)
-	if code != 0 || !strings.Contains(out, `"gridmd": "0.1"`) {
+	if code != 0 || !strings.Contains(out, `"gridmd": "1.0"`) {
 		t.Errorf("dump good: code=%d", code)
 	}
 	bad := write(t, dir, "bad.gmd", "no frontmatter")

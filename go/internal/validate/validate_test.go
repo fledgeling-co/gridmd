@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/lprhodes/grid-md/go/internal/parser"
+	"github.com/fledgling-co/gridmd/go/internal/parser"
 )
 
 func errsFor(src string) []string {
@@ -26,7 +26,7 @@ func has(msgs []string, substr string) bool {
 	return false
 }
 
-const head = "---\ngridmd: \"0.1\"\n---\n# S\n"
+const head = "---\ngridmd: \"1.0\"\n---\n# S\n"
 
 func wantErr(t *testing.T, src, substr string) {
 	t.Helper()
@@ -44,19 +44,19 @@ func wantClean(t *testing.T, src string) {
 
 func TestFrontmatter(t *testing.T) {
 	wantErr(t, "---\ntitle: x\n---\n# S\n", "gridmd")
-	wantErr(t, "---\ngridmd: \"0.1\"\nnames:\n  - just-a-string\n---\n# S\n", "names entries require a name")
-	wantErr(t, "---\ngridmd: \"0.1\"\nnames:\n  - { ref: A1 }\n---\n# S\n", "names entries require a name")
-	wantErr(t, "---\ngridmd: \"0.1\"\nnames:\n  - { name: X }\n---\n# S\n", "exactly one of ref")
-	wantErr(t, "---\ngridmd: \"0.1\"\nnames:\n  - { name: X, ref: A1, formula: B1 }\n---\n# S\n", "exactly one of ref")
-	wantErr(t, "---\ngridmd: \"0.1\"\nnames:\n  - { name: X, ref: A1 }\n  - { name: X, ref: B1 }\n---\n# S\n", "duplicate defined name")
-	wantClean(t, "---\ngridmd: \"0.1\"\nnames:\n  - { name: X, ref: A1 }\n---\n# S\n")
+	wantErr(t, "---\ngridmd: \"1.0\"\nnames:\n  - just-a-string\n---\n# S\n", "names entries require a name")
+	wantErr(t, "---\ngridmd: \"1.0\"\nnames:\n  - { ref: A1 }\n---\n# S\n", "names entries require a name")
+	wantErr(t, "---\ngridmd: \"1.0\"\nnames:\n  - { name: X }\n---\n# S\n", "exactly one of ref")
+	wantErr(t, "---\ngridmd: \"1.0\"\nnames:\n  - { name: X, ref: A1, formula: B1 }\n---\n# S\n", "exactly one of ref")
+	wantErr(t, "---\ngridmd: \"1.0\"\nnames:\n  - { name: X, ref: A1 }\n  - { name: X, ref: B1 }\n---\n# S\n", "duplicate defined name")
+	wantClean(t, "---\ngridmd: \"1.0\"\nnames:\n  - { name: X, ref: A1 }\n---\n# S\n")
 }
 
 func TestSheets(t *testing.T) {
-	wantErr(t, "---\ngridmd: \"0.1\"\n---\n", "at least one sheet")
-	wantErr(t, "---\ngridmd: \"0.1\"\n---\n# "+strings.Repeat("x", 32)+"\n", "exceeds 31 chars")
-	wantErr(t, "---\ngridmd: \"0.1\"\n---\n# a/b\n", "forbidden character")
-	wantErr(t, "---\ngridmd: \"0.1\"\n---\n# S\n# S\n", "duplicate sheet name")
+	wantErr(t, "---\ngridmd: \"1.0\"\n---\n", "at least one sheet")
+	wantErr(t, "---\ngridmd: \"1.0\"\n---\n# "+strings.Repeat("x", 32)+"\n", "exceeds 31 chars")
+	wantErr(t, "---\ngridmd: \"1.0\"\n---\n# a/b\n", "forbidden character")
+	wantErr(t, "---\ngridmd: \"1.0\"\n---\n# S\n# S\n", "duplicate sheet name")
 }
 
 func TestDefineOnceAndBounds(t *testing.T) {
@@ -78,7 +78,7 @@ func TestTable(t *testing.T) {
 	wantErr(t, head+"```{table} T at A1\n---\n| a | a |\n| 1 | 2 |\n```\n", "duplicate table column name")
 	wantErr(t, head+"```{table} T at A1\n---\n| h |\n| \"open |\n```\n", "table cell:")
 	// name collision with a defined name
-	wantErr(t, "---\ngridmd: \"0.1\"\nnames:\n  - { name: T, ref: A1 }\n---\n# S\n```{table} T at C1\n---\n| h |\n| v |\n```\n", "collides with an existing name")
+	wantErr(t, "---\ngridmd: \"1.0\"\nnames:\n  - { name: T, ref: A1 }\n---\n# S\n```{table} T at C1\n---\n| h |\n| v |\n```\n", "collides with an existing name")
 	// total cell addDef + unknown-column total (skipped) both clean
 	wantClean(t, head+"```{table} T at A1\ntotal:\n  h: =SUM([h])\n  nope: 0\n---\n| h |\n| 1 |\n```\n")
 }

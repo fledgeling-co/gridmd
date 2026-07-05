@@ -1,6 +1,6 @@
 # GridMD Interoperability, Storage & Security
 
-**Version 0.1 (draft).** Companion to [SPEC.md](SPEC.md). Covers the XLSX ⇄
+**Version 1.0.** Companion to [SPEC.md](SPEC.md). Covers the XLSX ⇄
 GridMD mapping, fidelity classes, the database storage model, diff/merge
 behaviour, and security.
 

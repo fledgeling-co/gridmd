@@ -81,7 +81,7 @@ test('info args: at sheet, size, flags', () => {
 // ---- document structure ----
 
 const MINI = `---
-gridmd: "0.1"
+gridmd: "1.0"
 ---
 
 # S1
@@ -111,7 +111,7 @@ test('mini document parses', () => {
 
 test('multiline body dedent rule: blank lines inside, terminator outside', () => {
   const doc = parseDocument(`---
-gridmd: "0.1"
+gridmd: "1.0"
 ---
 
 # S1
@@ -131,7 +131,7 @@ gridmd: "0.1"
 
 test('level-2 headings are comments; unrecognized lines error in strict', () => {
   const doc = parseDocument(`---
-gridmd: "0.1"
+gridmd: "1.0"
 ---
 
 # S1
@@ -146,7 +146,7 @@ stray prose
 
 test('unclosed fence is an error', () => {
   const doc = parseDocument(`---
-gridmd: "0.1"
+gridmd: "1.0"
 ---
 
 # S1
@@ -159,7 +159,7 @@ gridmd: "0.1"
 
 test('YAML aliases rejected (safe subset)', () => {
   const doc = parseDocument(`---
-gridmd: "0.1"
+gridmd: "1.0"
 x-a: &a [1]
 x-b: *a
 ---

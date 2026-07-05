@@ -14,7 +14,7 @@ import type { ZipEntry } from '../src/xlsx/zip';
 import { createEvaluator } from '../src/calc';
 import type { AtBlock, WorkbookModel } from '../src/types';
 
-const doc = (body: string): string => `---\ngridmd: "0.1"\n---\n\n# S1\n\n${body}`;
+const doc = (body: string): string => `---\ngridmd: "1.0"\n---\n\n# S1\n\n${body}`;
 const modelOf = (src: string): WorkbookModel => {
   const res = lint(src, { mode: 'strict' });
   assert.deepEqual(res.errors, [], `must lint clean: ${res.errors.map((e) => e.msg).join('; ')}`);

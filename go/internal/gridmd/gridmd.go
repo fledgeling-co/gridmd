@@ -5,10 +5,10 @@ package gridmd
 import (
 	"sort"
 
-	"github.com/lprhodes/grid-md/go/internal/dump"
-	"github.com/lprhodes/grid-md/go/internal/model"
-	"github.com/lprhodes/grid-md/go/internal/parser"
-	"github.com/lprhodes/grid-md/go/internal/validate"
+	"github.com/fledgling-co/gridmd/go/internal/dump"
+	"github.com/fledgling-co/gridmd/go/internal/model"
+	"github.com/fledgling-co/gridmd/go/internal/parser"
+	"github.com/fledgling-co/gridmd/go/internal/validate"
 )
 
 // Result is a lint outcome: the parsed document plus line-sorted diagnostics.

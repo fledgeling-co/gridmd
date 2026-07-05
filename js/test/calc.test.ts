@@ -16,7 +16,7 @@ const modelOf = (src: string, baseDir = '.') => {
 };
 
 const evalIn = (src: string, sheet: string, ref: string) => createEvaluator(modelOf(src)).evaluateCell(sheet, ref);
-const doc = (body: string): string => `---\ngridmd: "0.1"\n---\n\n# S1\n\n${body}`;
+const doc = (body: string): string => `---\ngridmd: "1.0"\n---\n\n# S1\n\n${body}`;
 
 test('arithmetic, precedence, unary, percent, concat, comparison', () => {
   assert.equal(evalIn(doc('@ A1 =1+2*3'), 'S1', 'A1'), 7);
@@ -29,7 +29,7 @@ test('arithmetic, precedence, unary, percent, concat, comparison', () => {
 });
 
 test('cell refs, ranges, cross-sheet, blank coercion', () => {
-  const src = `---\ngridmd: "0.1"\n---\n\n# S1\n\n@ A1 10\n@ A2 20\n@ B1 =SUM(A1:A3)\n@ B2 =A1+A9\n\n# S2\n\n@ A1 =S1!A2*2\n`;
+  const src = `---\ngridmd: "1.0"\n---\n\n# S1\n\n@ A1 10\n@ A2 20\n@ B1 =SUM(A1:A3)\n@ B2 =A1+A9\n\n# S2\n\n@ A1 =S1!A2*2\n`;
   assert.equal(evalIn(src, 'S1', 'B1'), 30);
   assert.equal(evalIn(src, 'S1', 'B2'), 10); // blank A9 → 0
   assert.equal(evalIn(src, 'S2', 'A1'), 40);
@@ -62,7 +62,7 @@ test('structured references + SUBTOTAL inside a table', () => {
 });
 
 test('defined names: ref, constant, LAMBDA', () => {
-  const src = `---\ngridmd: "0.1"\nnames:\n  - { name: Rate, ref: "S1!$A$1" }\n  - { name: Half, value: "0.5" }\n  - { name: FtoC, formula: "LAMBDA(F,(F-32)*5/9)" }\n---\n\n# S1\n\n@ A1 0.3\n@ B1 =Rate*10\n@ B2 =Half*4\n@ B3 =FtoC(212)\n`;
+  const src = `---\ngridmd: "1.0"\nnames:\n  - { name: Rate, ref: "S1!$A$1" }\n  - { name: Half, value: "0.5" }\n  - { name: FtoC, formula: "LAMBDA(F,(F-32)*5/9)" }\n---\n\n# S1\n\n@ A1 0.3\n@ B1 =Rate*10\n@ B2 =Half*4\n@ B3 =FtoC(212)\n`;
   assert.equal(evalIn(src, 'S1', 'B1'), 3);
   assert.equal(evalIn(src, 'S1', 'B2'), 2);
   assert.equal(evalIn(src, 'S1', 'B3'), 100);

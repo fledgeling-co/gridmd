@@ -25,7 +25,7 @@ def test_dump_success():
 
 def test_dump_invalid(tmp_path):
     bad = tmp_path / "bad.gmd"
-    bad.write_text('---\ngridmd: "0.1"\n---\n# S\n@ A1 1\n@ A1 2\n')
+    bad.write_text('---\ngridmd: "1.0"\n---\n# S\n@ A1 1\n@ A1 2\n')
     code, _out, err = _run(["dump", str(bad)])
     assert code == 1 and "cell defined more than once" in err
 
@@ -54,7 +54,7 @@ def test_to_xlsx_and_round_trip(tmp_path):
 
 def test_to_xlsx_invalid(tmp_path):
     bad = tmp_path / "bad.gmd"
-    bad.write_text('---\ngridmd: "0.1"\n---\n# S\n@ A1 1\n@ A1 2\n')
+    bad.write_text('---\ngridmd: "1.0"\n---\n# S\n@ A1 1\n@ A1 2\n')
     code, _out, err = _run(["to-xlsx", str(bad), "-o", str(tmp_path / "x.xlsx")])
     assert code == 1 and "defined more than once" in err
 

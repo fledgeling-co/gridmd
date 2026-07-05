@@ -11,10 +11,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/lprhodes/grid-md/go/internal/gridmd"
-	"github.com/lprhodes/grid-md/go/internal/model"
-	"github.com/lprhodes/grid-md/go/internal/xlsxread"
-	"github.com/lprhodes/grid-md/go/internal/xlsxwrite"
+	"github.com/fledgling-co/gridmd/go/internal/gridmd"
+	"github.com/fledgling-co/gridmd/go/internal/model"
+	"github.com/fledgling-co/gridmd/go/internal/xlsxread"
+	"github.com/fledgling-co/gridmd/go/internal/xlsxwrite"
 )
 
 func main() {

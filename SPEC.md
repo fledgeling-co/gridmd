@@ -1,6 +1,6 @@
 # GridMD Specification
 
-**Version:** 0.1 (draft) · **File extension:** `.gmd` · **Media type (proposed):** `text/gridmd`
+**Version:** 1.0 · **File extension:** `.gmd` · **Media type (proposed):** `text/gridmd`
 
 The key words MUST, MUST NOT, SHOULD, MAY are to be interpreted as in RFC 2119.
 
@@ -45,7 +45,7 @@ The document MUST begin with a YAML frontmatter block delimited by `---` lines.
 
 ```yaml
 ---
-gridmd: "0.1"                       # REQUIRED. Spec version.
+gridmd: "1.0"                       # REQUIRED. Spec version.
 title: Q3 Board Pack                # optional workbook title
 properties:                         # optional document properties
   author: Luke Rhodes

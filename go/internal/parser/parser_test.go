@@ -99,7 +99,7 @@ func TestParseFrontmatterErrors(t *testing.T) {
 	if d := Parse("no frontmatter here", "strict"); len(d.Errors) == 0 {
 		t.Error("expected missing-frontmatter error")
 	}
-	if d := Parse("---\ngridmd: \"0.1\"", "strict"); len(d.Errors) == 0 {
+	if d := Parse("---\ngridmd: \"1.0\"", "strict"); len(d.Errors) == 0 {
 		t.Error("expected unterminated-frontmatter error")
 	}
 }
@@ -107,7 +107,7 @@ func TestParseFrontmatterErrors(t *testing.T) {
 func TestParseDocumentStructure(t *testing.T) {
 	src := strings.Join([]string{
 		"---",
-		"gridmd: \"0.1\"",
+		"gridmd: \"1.0\"",
 		"---",
 		"",
 		"> a doc comment",
@@ -186,29 +186,29 @@ func TestParseDocumentStructure(t *testing.T) {
 
 func TestParseAtBodyNonMapAndUnclosedFence(t *testing.T) {
 	// @ body that is not a mapping.
-	d := Parse("---\ngridmd: \"0.1\"\n---\n# S\n@ A1\n  - not a map\n", "strict")
+	d := Parse("---\ngridmd: \"1.0\"\n---\n# S\n@ A1\n  - not a map\n", "strict")
 	if !hasMsg(d.Errors, "must be a YAML mapping") {
 		t.Errorf("expected non-map body error, got %v", d.Errors)
 	}
 	// Unclosed fence.
-	d = Parse("---\ngridmd: \"0.1\"\n---\n# S\n```{grid} A1\n| a |\n", "strict")
+	d = Parse("---\ngridmd: \"1.0\"\n---\n# S\n```{grid} A1\n| a |\n", "strict")
 	if !hasMsg(d.Errors, "unclosed") {
 		t.Errorf("expected unclosed fence error, got %v", d.Errors)
 	}
 	// Table missing --- separator.
-	d = Parse("---\ngridmd: \"0.1\"\n---\n# S\n```{table} T at A1\n| a |\n```\n", "strict")
+	d = Parse("---\ngridmd: \"1.0\"\n---\n# S\n```{table} T at A1\n| a |\n```\n", "strict")
 	if !hasMsg(d.Errors, "`---`-separated") {
 		t.Errorf("expected table separator error, got %v", d.Errors)
 	}
 	// Bad pipe row inside grid.
-	d = Parse("---\ngridmd: \"0.1\"\n---\n# S\n```{grid} A1\nnot a row\n```\n", "strict")
+	d = Parse("---\ngridmd: \"1.0\"\n---\n# S\n```{grid} A1\nnot a row\n```\n", "strict")
 	if !hasMsg(d.Errors, "expected a pipe row") {
 		t.Errorf("expected pipe-row error, got %v", d.Errors)
 	}
 }
 
 func TestParseModes(t *testing.T) {
-	src := "---\ngridmd: \"0.1\"\n---\n# S\ngarbage line\n"
+	src := "---\ngridmd: \"1.0\"\n---\n# S\ngarbage line\n"
 	if d := Parse(src, "strict"); len(d.Errors) == 0 {
 		t.Error("strict should error on garbage")
 	}
@@ -224,7 +224,7 @@ func TestParseModes(t *testing.T) {
 
 func TestParseAtPropsOnlyAndScriptNoSeparator(t *testing.T) {
 	// Script without a --- separator: whole body is code.
-	d := Parse("---\ngridmd: \"0.1\"\n---\n# S\n```{script} S lang=js\ncode only\n```\n", "strict")
+	d := Parse("---\ngridmd: \"1.0\"\n---\n# S\n```{script} S lang=js\ncode only\n```\n", "strict")
 	var sb *FenceBlock
 	for _, b := range d.Sheets[0].Blocks {
 		if fb, ok := b.(*FenceBlock); ok && fb.Kind == "script" {
@@ -236,7 +236,7 @@ func TestParseAtPropsOnlyAndScriptNoSeparator(t *testing.T) {
 	}
 	// A very long unrecognized line is truncated in the message.
 	long := strings.Repeat("z", 80)
-	d = Parse("---\ngridmd: \"0.1\"\n---\n# S\n"+long+"\n", "strict")
+	d = Parse("---\ngridmd: \"1.0\"\n---\n# S\n"+long+"\n", "strict")
 	if len(d.Errors) == 0 || len(d.Errors[0].Msg) > 90 {
 		t.Errorf("long line handling: %v", d.Errors)
 	}
@@ -246,7 +246,7 @@ func TestBlockMarkersAndLongBadRow(t *testing.T) {
 	(&AtBlock{}).isBlock()
 	(&FenceBlock{}).isBlock()
 	long := strings.Repeat("q", 70)
-	d := Parse("---\ngridmd: \"0.1\"\n---\n# S\n```{grid} A1\n"+long+"\n```\n", "strict")
+	d := Parse("---\ngridmd: \"1.0\"\n---\n# S\n```{grid} A1\n"+long+"\n```\n", "strict")
 	if !hasMsg(d.Errors, "expected a pipe row") {
 		t.Errorf("expected pipe-row error on long line, got %v", d.Errors)
 	}

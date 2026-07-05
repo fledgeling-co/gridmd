@@ -8,10 +8,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/lprhodes/grid-md/go/internal/yamlsubset"
+	"github.com/fledgling-co/gridmd/go/internal/yamlsubset"
 )
 
-// ReservedKinds is the closed set of directive kinds in 0.1.
+// ReservedKinds is the closed set of directive kinds in 1.0.
 var ReservedKinds = map[string]bool{
 	"sheet": true, "grid": true, "spill-cache": true, "table": true, "cf": true,
 	"validation": true, "filter": true, "chart": true, "sparklines": true,

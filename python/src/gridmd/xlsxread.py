@@ -74,7 +74,7 @@ def _native_import(entries: dict[str, bytes]) -> tuple[str, list[ImportReport]]:
     shared = _read_shared_strings(shared_src) if shared_src is not None else []
 
     report: list[ImportReport] = []
-    out = ['---\ngridmd: "0.1"\n---\n']
+    out = ['---\ngridmd: "1.0"\n---\n']
 
     sheets_el = wb.find("sheets")
     sheet_nodes = sheets_el.findall("sheet") if sheets_el is not None else []

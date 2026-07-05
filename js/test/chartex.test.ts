@@ -10,7 +10,7 @@ import { zipRead } from '../src/xlsx/zip';
 import { xlsxToGridmd } from '../src/xlsx/read';
 
 const DOC = `---
-gridmd: "0.1"
+gridmd: "1.0"
 title: Chart families
 ---
 

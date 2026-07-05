@@ -13,7 +13,7 @@ use gridmd::yaml::{load, Yaml};
 use gridmd::{dump_source, lint};
 
 fn s(body: &str) -> String {
-    format!("---\ngridmd: \"0.1\"\n---\n\n# S\n{body}\n")
+    format!("---\ngridmd: \"1.0\"\n---\n\n# S\n{body}\n")
 }
 fn model_of(src: &str) -> gridmd::model::Model {
     build_model(&lint(src, Mode::Strict).doc)
@@ -82,7 +82,7 @@ fn writer_non_numeric_cached_and_very_hidden() {
     // Formula cached bool / error / date → scalar_display str path; very-hidden
     // sheet → workbook state; a genuine round-trip via the carry part.
     let src = format!(
-        "---\ngridmd: \"0.1\"\n---\n\n# S\n```{{sheet}}\nhidden: very\n```\n@ A1 =B1 :: TRUE\n@ A2 =B2 :: #N/A\n@ A3 =B3 :: 2026-01-01\n"
+        "---\ngridmd: \"1.0\"\n---\n\n# S\n```{{sheet}}\nhidden: very\n```\n@ A1 =B1 :: TRUE\n@ A2 =B2 :: #N/A\n@ A3 =B3 :: 2026-01-01\n"
     );
     let m = model_of(&src);
     let xlsx = write_xlsx(&m, &src);
@@ -147,7 +147,7 @@ fn writer_escapes_and_false_cached() {
     // Formula text with XML metacharacters + apostrophes → xml_escape branches;
     // a FALSE cached value → scalar_display boolean-false branch.
     let src = format!(
-        "---\ngridmd: \"0.1\"\n---\n\n# S\n@ A1 =IF(B1>2,\"<a>\",C1&\"y\") :: FALSE\n@ A2 ='Other Sheet'!D4 :: 1\n"
+        "---\ngridmd: \"1.0\"\n---\n\n# S\n@ A1 =IF(B1>2,\"<a>\",C1&\"y\") :: FALSE\n@ A2 ='Other Sheet'!D4 :: 1\n"
     );
     let m = model_of(&src);
     let xlsx = write_xlsx(&m, &src);

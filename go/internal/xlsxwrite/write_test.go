@@ -10,13 +10,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/lprhodes/grid-md/go/internal/model"
-	"github.com/lprhodes/grid-md/go/internal/parser"
-	"github.com/lprhodes/grid-md/go/internal/scalar"
+	"github.com/fledgling-co/gridmd/go/internal/model"
+	"github.com/fledgling-co/gridmd/go/internal/parser"
+	"github.com/fledgling-co/gridmd/go/internal/scalar"
 )
 
 const src = `---
-gridmd: "0.1"
+gridmd: "1.0"
 date-system: 1904
 ---
 # S

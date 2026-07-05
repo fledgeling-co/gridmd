@@ -12,7 +12,7 @@ import { zipRead, zipWrite } from '../src/xlsx/zip';
 import type { ZipEntry } from '../src/xlsx/zip';
 import type { WorkbookModel } from '../src/types';
 
-const doc = (body: string): string => `---\ngridmd: "0.1"\n---\n\n# S1\n\n${body}`;
+const doc = (body: string): string => `---\ngridmd: "1.0"\n---\n\n# S1\n\n${body}`;
 const modelOf = (src: string): WorkbookModel => {
   const res = lint(src, { mode: 'strict' });
   assert.deepEqual(res.errors, [], `must lint clean: ${res.errors.map((e) => e.msg).join('; ')}`);
@@ -76,7 +76,7 @@ test('reader: carried worksheet chart, malformed timeline, unknown CF rule type'
   assert.ok(xlsxToGridmd(chartPatched).report.some((r) => r.note?.includes('unrecognized chart form')));
 
   // (b) a pivot timeline whose cache lost its pivotTable reference
-  const tlDoc = `---\ngridmd: "0.1"\n---\n\n# D\n\n\`\`\`{table} Sales at A1\n---\n| region | amount | when |\n| AU | 10 | 2026-01-05 |\n| NZ | 20 | 2026-02-11 |\n\`\`\`\n\n\`\`\`{pivot} P at E1\nsource: Sales\nrows:\n  - { field: region }\nvalues:\n  - { field: amount, agg: sum }\n\`\`\`\n\n\`\`\`{slicer} at H1\nkind: timeline\nfor: P\nfield: when\nlevel: months\n\`\`\`\n`;
+  const tlDoc = `---\ngridmd: "1.0"\n---\n\n# D\n\n\`\`\`{table} Sales at A1\n---\n| region | amount | when |\n| AU | 10 | 2026-01-05 |\n| NZ | 20 | 2026-02-11 |\n\`\`\`\n\n\`\`\`{pivot} P at E1\nsource: Sales\nrows:\n  - { field: region }\nvalues:\n  - { field: amount, agg: sum }\n\`\`\`\n\n\`\`\`{slicer} at H1\nkind: timeline\nfor: P\nfield: when\nlevel: months\n\`\`\`\n`;
   const tlPatched = patch(writeXlsx(modelOf(tlDoc)).buffer, (parts) => {
     for (const name of [...parts.keys()]) {
       if (/timelineCaches\/timelineCache\d+\.xml$/.test(name)) parts.set(name, Buffer.from('<timelineCacheDefinition xmlns="http://schemas.microsoft.com/office/spreadsheetml/2010/11/main" name="x" sourceName="when"/>'));

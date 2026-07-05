@@ -28,7 +28,7 @@ const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAM
 
 test('kitchen-sink: every CF rule, validation, page + sparkline shape emits and round-trips', () => {
   const src = `---
-gridmd: "0.1"
+gridmd: "1.0"
 title: Everything
 properties: { author: Jo, company: Acme, created: 2026-03-04 }
 calc: { mode: manual, iterative: { enabled: true, max-iterations: 50, max-change: 0.01 } }
@@ -207,7 +207,7 @@ console.log(1)
 
 test('chart families: pie/doughnut/scatter/bubble/stock + data shorthand + combo axes', () => {
   const src = `---
-gridmd: "0.1"
+gridmd: "1.0"
 ---
 
 # S
@@ -268,7 +268,7 @@ data-table: { show: true, legend-keys: false }
 
 test('pivot from a range source (headed range, not a table)', () => {
   const src = `---
-gridmd: "0.1"
+gridmd: "1.0"
 ---
 
 # Data
@@ -305,7 +305,7 @@ test('write error/partial branches: remote+missing+bad image, slicer/filter/pivo
   const dir = mkdtempSync(join(tmpdir(), 'gridmd-img-'));
   writeFileSync(join(dir, 'bad.png'), Buffer.from([1, 2, 3, 4])); // not a real png/jpeg
   const src = `---
-gridmd: "0.1"
+gridmd: "1.0"
 ---
 
 # S
@@ -366,14 +366,14 @@ values:
 });
 
 test('unknown chart type is carried; ChartEx with no resolvable val is not emitted', () => {
-  const carried = convert(`---\ngridmd: "0.1"\n---\n\n# S\n\n\`\`\`{chart} surface at A1\nseries:\n  - { name: X, val: A1:A2 }\n\`\`\`\n`);
+  const carried = convert(`---\ngridmd: "1.0"\n---\n\n# S\n\n\`\`\`{chart} surface at A1\nseries:\n  - { name: X, val: A1:A2 }\n\`\`\`\n`);
   assert.ok(carried.report.some((r) => r.action === 'carried' && r.feature.includes('surface')));
-  const noVal = convert(`---\ngridmd: "0.1"\n---\n\n# S\n\n\`\`\`{chart} treemap at A1\nseries:\n  - { name: X, val: "NoTable[c]" }\n\`\`\`\n`);
+  const noVal = convert(`---\ngridmd: "1.0"\n---\n\n# S\n\n\`\`\`{chart} treemap at A1\nseries:\n  - { name: X, val: "NoTable[c]" }\n\`\`\`\n`);
   assert.ok(noVal.report.some((r) => r.action === 'not-emitted' && r.feature.includes('treemap')));
 });
 
 test('chart bound to a missing pivot is carried', () => {
-  const r = convert(`---\ngridmd: "0.1"\n---\n\n# S\n\n\`\`\`{chart} column at A1\npivot: Ghost\n\`\`\`\n`);
+  const r = convert(`---\ngridmd: "1.0"\n---\n\n# S\n\n\`\`\`{chart} column at A1\npivot: Ghost\n\`\`\`\n`);
   assert.ok(r.report.some((x) => x.feature.includes('PivotChart') && x.action === 'carried'));
 });
 

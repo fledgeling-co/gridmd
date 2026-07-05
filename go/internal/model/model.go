@@ -10,10 +10,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/lprhodes/grid-md/go/internal/numfmt"
-	"github.com/lprhodes/grid-md/go/internal/parser"
-	"github.com/lprhodes/grid-md/go/internal/refs"
-	"github.com/lprhodes/grid-md/go/internal/scalar"
+	"github.com/fledgling-co/gridmd/go/internal/numfmt"
+	"github.com/fledgling-co/gridmd/go/internal/parser"
+	"github.com/fledgling-co/gridmd/go/internal/refs"
+	"github.com/fledgling-co/gridmd/go/internal/scalar"
 )
 
 var (

@@ -15,7 +15,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/lprhodes/grid-md/go/internal/xlsxwrite"
+	"github.com/fledgling-co/gridmd/go/internal/xlsxwrite"
 )
 
 type carryDoc struct {

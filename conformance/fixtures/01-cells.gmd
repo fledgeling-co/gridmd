@@ -1,5 +1,5 @@
 ---
-gridmd: "0.1"
+gridmd: "1.0"
 title: Cells fixture
 names:
   - { name: Rate, ref: "Main!$B$1" }

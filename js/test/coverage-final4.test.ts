@@ -15,7 +15,7 @@ import { zipRead } from '../src/xlsx/zip';
 import { createEvaluator, Unsupported } from '../src/calc';
 import type { AtBlock, WorkbookModel } from '../src/types';
 
-const doc = (body: string): string => `---\ngridmd: "0.1"\n---\n\n# S1\n\n${body}`;
+const doc = (body: string): string => `---\ngridmd: "1.0"\n---\n\n# S1\n\n${body}`;
 const modelOf = (src: string): WorkbookModel => {
   const res = lint(src, { mode: 'strict' });
   assert.deepEqual(res.errors, [], `must lint clean: ${res.errors.map((e) => e.msg).join('; ')}`);
@@ -56,7 +56,7 @@ test('model: table sort-by-color level reports partial', () => {
 });
 
 test('reader: pivot grand-totals disabled round-trips', () => {
-  const src = `---\ngridmd: "0.1"\n---\n\n# D\n\n\`\`\`{table} Sales at A1\n---\n| region | amount |\n| AU | 10 |\n| NZ | 20 |\n\`\`\`\n\n\`\`\`{pivot} P at E1\nsource: Sales\nrows:\n  - { field: region }\nvalues:\n  - { field: amount, agg: sum }\ngrand-totals: { rows: false, cols: false }\n\`\`\`\n`;
+  const src = `---\ngridmd: "1.0"\n---\n\n# D\n\n\`\`\`{table} Sales at A1\n---\n| region | amount |\n| AU | 10 |\n| NZ | 20 |\n\`\`\`\n\n\`\`\`{pivot} P at E1\nsource: Sales\nrows:\n  - { field: region }\nvalues:\n  - { field: amount, agg: sum }\ngrand-totals: { rows: false, cols: false }\n\`\`\`\n`;
   const { buffer } = writeXlsx(modelOf(src));
   const { gmd } = xlsxToGridmd(buffer);
   assert.deepEqual(lint(gmd, { mode: 'strict' }).errors, []);
@@ -72,7 +72,7 @@ test('writer: column-tiled sparkline source', () => {
 });
 
 test('pivot: range source with a non-string header is not emitted', () => {
-  const src = `---\ngridmd: "0.1"\n---\n\n# Data\n\n\`\`\`{grid} A1\n| 10 | 20 |\n| x | y |\n\`\`\`\n\n\`\`\`{pivot} P at E1\nsource: Data!A1:B2\nvalues:\n  - { field: x }\n\`\`\`\n`;
+  const src = `---\ngridmd: "1.0"\n---\n\n# Data\n\n\`\`\`{grid} A1\n| 10 | 20 |\n| x | y |\n\`\`\`\n\n\`\`\`{pivot} P at E1\nsource: Data!A1:B2\nvalues:\n  - { field: x }\n\`\`\`\n`;
   const { report } = writeXlsx(modelOf(src));
   assert.ok(report.some((r) => r.feature.includes('{pivot} P') && r.action === 'not-emitted'));
 });

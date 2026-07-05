@@ -246,7 +246,7 @@ def _cached_value(sc: Scalar | None, date_system: int) -> str:
 def _carry_xml(b64: str) -> str:
     return (
         _XML_DECL
-        + '<gridmd xmlns="urn:gridmd:carry" version="0.1"><source encoding="base64">'
+        + '<gridmd xmlns="urn:gridmd:carry" version="1.0"><source encoding="base64">'
         + b64
         + "</source></gridmd>"
     )

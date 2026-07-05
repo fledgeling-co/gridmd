@@ -1,10 +1,10 @@
 {
   "name": "gridmd",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "GridMD reference parser, linter and two-way XLSX converter (spec: SPEC.md)",
   "type": "module",
   "license": "MIT",
-  "repository": "github:lprhodes/grid-md",
+  "repository": "github:fledgling-co/gridmd",
   "engines": {
     "node": ">=20"
   },

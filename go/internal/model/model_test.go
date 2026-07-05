@@ -3,8 +3,8 @@ package model
 import (
 	"testing"
 
-	"github.com/lprhodes/grid-md/go/internal/parser"
-	"github.com/lprhodes/grid-md/go/internal/scalar"
+	"github.com/fledgling-co/gridmd/go/internal/parser"
+	"github.com/fledgling-co/gridmd/go/internal/scalar"
 )
 
 func build(src string) *Workbook {
@@ -22,7 +22,7 @@ func cellAtRef(s *Sheet, col, row int) *Cell {
 
 func TestBuildCounts(t *testing.T) {
 	src := `---
-gridmd: "0.1"
+gridmd: "1.0"
 date-system: 1904
 ---
 
@@ -109,7 +109,7 @@ date-system: 1904
 
 func TestBuildChartSheetAndBodyContent(t *testing.T) {
 	src := `---
-gridmd: "0.1"
+gridmd: "1.0"
 ---
 
 # Chart
@@ -165,7 +165,7 @@ gridmd: "0.1"
 
 func TestSetContentNoMerge(t *testing.T) {
 	// Duplicate definitions: the second is dropped (model does not error).
-	wb := build("---\ngridmd: \"0.1\"\n---\n# S\n@ A1 1\n@ A1 2\n")
+	wb := build("---\ngridmd: \"1.0\"\n---\n# S\n@ A1 1\n@ A1 2\n")
 	a1 := cellAtRef(wb.Sheets[0], 1, 1)
 	if a1.Content.Scalar.Num != 1 {
 		t.Errorf("expected first def to win, got %v", a1.Content.Scalar.Num)
@@ -173,14 +173,14 @@ func TestSetContentNoMerge(t *testing.T) {
 }
 
 func TestNilAnchors(t *testing.T) {
-	wb := build("---\ngridmd: \"0.1\"\n---\n# S\n```{grid}\n| a |\n```\n```{spill-cache}\n| a |\n```\n```{table} T\n---\n| h |\n```\n")
+	wb := build("---\ngridmd: \"1.0\"\n---\n# S\n```{grid}\n| a |\n```\n```{spill-cache}\n| a |\n```\n```{table} T\n---\n| h |\n```\n")
 	if len(wb.Sheets[0].Cells()) != 0 || len(wb.Sheets[0].Tables) != 0 {
 		t.Errorf("nil anchors should produce nothing: cells=%d tables=%d", len(wb.Sheets[0].Cells()), len(wb.Sheets[0].Tables))
 	}
 }
 
 func TestRangeFillAndArrayCSE(t *testing.T) {
-	wb := build("---\ngridmd: \"0.1\"\n---\n# S\n@ A1:A3 =B1*2\n@ D1 =C1 { array: D1:D2 }\n")
+	wb := build("---\ngridmd: \"1.0\"\n---\n# S\n@ A1:A3 =B1*2\n@ D1 =C1 { array: D1:D2 }\n")
 	s := wb.Sheets[0]
 	a2 := cellAtRef(s, 1, 2)
 	if a2 == nil || a2.Content.Formula == nil || *a2.Content.Formula != "B2*2" {
@@ -193,7 +193,7 @@ func TestRangeFillAndArrayCSE(t *testing.T) {
 }
 
 func TestBuildEdgeCases(t *testing.T) {
-	src := "---\ngridmd: \"0.1\"\n---\n# S\n" +
+	src := "---\ngridmd: \"1.0\"\n---\n# S\n" +
 		"@ A1 =X { spill: A1:A3 }\n" +
 		"```{spill-cache} A1\n| p |\n|  |\n| r |\n```\n" + // blank middle cell
 		"```{table} T at C1\nheader: false\ntotal:\n  nope: 5\n---\n| a | 1 |\n| b | 2 |\n```\n" +

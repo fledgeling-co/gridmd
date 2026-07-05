@@ -1,6 +1,6 @@
 # GridMD Directive Catalog
 
-**Version 0.1 (draft).** Normative companion to [SPEC.md](SPEC.md) §10. Every
+**Version 1.0.** Normative companion to [SPEC.md](SPEC.md) §10. Every
 catalog directive follows the general fenced form: fence line (`{kind}` +
 positional args + `key=val` flags), YAML meta, optional `---`-separated payload.
 Core directives `{sheet}`, `{grid}`, and `{spill-cache}` are specified in

@@ -2,7 +2,7 @@ import { test } from 'bun:test';
 import assert from 'node:assert/strict';
 import { lint, isValidPartPath } from '../src/index';
 
-const doc = (body: string): string => `---\ngridmd: "0.1"\n---\n\n${body}`;
+const doc = (body: string): string => `---\ngridmd: "1.0"\n---\n\n${body}`;
 const errsOf = (src: string): string[] => lint(src).errors.map((e) => e.msg);
 
 test('duplicate cell definition is an error', () => {
@@ -110,12 +110,12 @@ test('raw part path canonicalization', () => {
 });
 
 test('duplicate sheet names + bad sheet chars', () => {
-  const errs = errsOf(`---\ngridmd: "0.1"\n---\n\n# Data\n\n# data\n\n# Bad[1]\n`);
+  const errs = errsOf(`---\ngridmd: "1.0"\n---\n\n# Data\n\n# data\n\n# Bad[1]\n`);
   assert.ok(errs.some((m) => /duplicate sheet name/.test(m)));
   assert.ok(errs.some((m) => /forbidden character/.test(m)));
 });
 
 test('table/pivot names share the defined-name namespace', () => {
-  const errs = errsOf(`---\ngridmd: "0.1"\nnames:\n  - { name: Sales, ref: "S1!$A$1" }\n---\n\n# S1\n\n\`\`\`{table} Sales at A1\n---\n| a |\n| 1 |\n\`\`\`\n`);
+  const errs = errsOf(`---\ngridmd: "1.0"\nnames:\n  - { name: Sales, ref: "S1!$A$1" }\n---\n\n# S1\n\n\`\`\`{table} Sales at A1\n---\n| a |\n| 1 |\n\`\`\`\n`);
   assert.ok(errs.some((m) => /collides with an existing name/.test(m)));
 });

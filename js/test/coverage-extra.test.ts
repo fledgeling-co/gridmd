@@ -11,7 +11,7 @@ import { createEvaluator, Unsupported } from '../src/calc';
 import { parseXml, decodeEntities, attr, textOf, findDeep } from '../src/xml';
 import type { WorkbookModel } from '../src/types';
 
-const doc = (body: string): string => `---\ngridmd: "0.1"\n---\n\n# S1\n\n${body}`;
+const doc = (body: string): string => `---\ngridmd: "1.0"\n---\n\n# S1\n\n${body}`;
 const modelOf = (src: string): WorkbookModel => {
   const res = lint(src, { mode: 'strict' });
   assert.deepEqual(res.errors, [], `must lint clean: ${res.errors.map((e) => e.msg).join('; ')}`);
@@ -22,7 +22,7 @@ const evalIn = (src: string, ref: string): unknown => createEvaluator(modelOf(sr
 // ---- calc value coercions & function edges ----
 
 test('calc: quoted sheet name in a formula', () => {
-  const src = `---\ngridmd: "0.1"\n---\n\n# S 1\n\n@ A1 7\n\n# S2\n\n@ A1 ='S 1'!A1*2\n`;
+  const src = `---\ngridmd: "1.0"\n---\n\n# S 1\n\n@ A1 7\n\n# S2\n\n@ A1 ='S 1'!A1*2\n`;
   assert.equal(createEvaluator(modelOf(src)).evaluateCell('S2', 'A1'), 14);
 });
 
@@ -61,7 +61,7 @@ test('calc: array constants with text, boolean and invalid elements', () => {
 });
 
 test('calc: calling a non-LAMBDA defined name throws', () => {
-  const src = `---\ngridmd: "0.1"\nnames:\n  - { name: K, value: "5" }\n---\n\n# S1\n\n@ A1 =K(1)\n`;
+  const src = `---\ngridmd: "1.0"\nnames:\n  - { name: K, value: "5" }\n---\n\n# S1\n\n@ A1 =K(1)\n`;
   assert.throws(() => createEvaluator(modelOf(src)).evaluateCell('S1', 'A1'), /call of non-LAMBDA/);
 });
 
@@ -95,7 +95,7 @@ test('parseTarget: out-of-range row range + unmatched range → null', () => {
 test('validate: frontmatter + directive error branches', () => {
   const errsOf = (src: string): string[] => lint(src).errors.map((e) => e.msg);
 
-  const fm = errsOf(`---\ngridmd: "0.1"\ncalc: { mode: nope }\nnames:\n  - { ref: "S1!$A$1" }\n  - { name: Dup, value: "1" }\n  - { name: Dup, value: "2" }\ntheme: { colors: { accent1: "notacolour" } }\n---\n\n# S1\n`);
+  const fm = errsOf(`---\ngridmd: "1.0"\ncalc: { mode: nope }\nnames:\n  - { ref: "S1!$A$1" }\n  - { name: Dup, value: "1" }\n  - { name: Dup, value: "2" }\ntheme: { colors: { accent1: "notacolour" } }\n---\n\n# S1\n`);
   assert.ok(fm.some((m) => /calc.mode must be/.test(m)));
   assert.ok(fm.some((m) => /names entries require a name/.test(m)));
   assert.ok(fm.some((m) => /duplicate defined name/.test(m)));
@@ -121,7 +121,7 @@ test('validate: frontmatter + directive error branches', () => {
   assert.ok(badProps.some((m) => /control: unknown control/.test(m)));
 
   // warnings: unknown frontmatter/sheet/property keys + formula-without-cache
-  const warned = lint(`---\ngridmd: "0.1"\nunknownfm: 1\n---\n\n# S1\n\n@ A1\n  formula: =B1\n`);
+  const warned = lint(`---\ngridmd: "1.0"\nunknownfm: 1\n---\n\n# S1\n\n@ A1\n  formula: =B1\n`);
   assert.ok(warned.warnings.some((w) => /unknown frontmatter key/.test(w.msg)));
   assert.ok(warned.warnings.some((w) => /formula without a cached value/.test(w.msg)));
 });

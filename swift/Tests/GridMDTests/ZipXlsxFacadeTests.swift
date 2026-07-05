@@ -98,7 +98,7 @@ final class ZipTests: XCTestCase {
 final class XlsxTests: XCTestCase {
     let doc = """
     ---
-    gridmd: "0.1"
+    gridmd: "1.0"
     ---
     # S
     @ A1 "text & <stuff>"
@@ -173,7 +173,7 @@ final class FacadeTests: XCTestCase {
     }
 
     func testLintLenient() {
-        let result = GridMD.lint("---\ngridmd: \"0.1\"\n---\n# S\nbogus", strict: false)
+        let result = GridMD.lint("---\ngridmd: \"1.0\"\n---\n# S\nbogus", strict: false)
         XCTAssertTrue(result.isValid)
         XCTAssertFalse(result.warnings.isEmpty)
         XCTAssertEqual(result.sheets, 1)

@@ -6,12 +6,12 @@ import (
 )
 
 func TestLintCleanAndErrors(t *testing.T) {
-	res := Lint("---\ngridmd: \"0.1\"\n---\n# S\n@ A1 1\n")
+	res := Lint("---\ngridmd: \"1.0\"\n---\n# S\n@ A1 1\n")
 	if len(res.Errors) != 0 || res.Doc == nil {
 		t.Errorf("clean lint errors=%v", res.Errors)
 	}
 	// Errors are returned line-sorted.
-	res = Lint("---\ngridmd: \"0.1\"\n---\n# S\n@ A1 1\n@ A1 2\n@ ?? 3\n")
+	res = Lint("---\ngridmd: \"1.0\"\n---\n# S\n@ A1 1\n@ A1 2\n@ ?? 3\n")
 	if len(res.Errors) < 2 {
 		t.Fatalf("expected multiple errors, got %v", res.Errors)
 	}
@@ -23,7 +23,7 @@ func TestLintCleanAndErrors(t *testing.T) {
 }
 
 func TestDump(t *testing.T) {
-	out, diags, ok := Dump("---\ngridmd: \"0.1\"\ntitle: X\n---\n# S\n@ A1 1\n")
+	out, diags, ok := Dump("---\ngridmd: \"1.0\"\ntitle: X\n---\n# S\n@ A1 1\n")
 	if !ok || len(diags) != 0 || !strings.Contains(out, `"title": "X"`) {
 		t.Errorf("Dump ok path: ok=%v diags=%v", ok, diags)
 	}

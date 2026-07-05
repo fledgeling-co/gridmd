@@ -16,10 +16,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lprhodes/grid-md/go/internal/model"
-	"github.com/lprhodes/grid-md/go/internal/numfmt"
-	"github.com/lprhodes/grid-md/go/internal/refs"
-	"github.com/lprhodes/grid-md/go/internal/scalar"
+	"github.com/fledgling-co/gridmd/go/internal/model"
+	"github.com/fledgling-co/gridmd/go/internal/numfmt"
+	"github.com/fledgling-co/gridmd/go/internal/refs"
+	"github.com/fledgling-co/gridmd/go/internal/scalar"
 )
 
 // CarryPart is the fixed package path of the GridMD source carry part.
@@ -317,7 +317,7 @@ func cachedValue(sc *scalar.Scalar, dateSystem int) string {
 
 func carryXML(b64 string) string {
 	return xmlDecl +
-		`<gridmd xmlns="urn:gridmd:carry" version="0.1"><source encoding="base64">` +
+		`<gridmd xmlns="urn:gridmd:carry" version="1.0"><source encoding="base64">` +
 		b64 + `</source></gridmd>`
 }
 

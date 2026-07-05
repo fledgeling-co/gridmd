@@ -72,7 +72,7 @@ fn native_import(entries: &[(String, Vec<u8>)]) -> Result<(String, Vec<ImportRep
         .unwrap_or_default();
 
     let mut report_lines = Vec::new();
-    let mut out = String::from("---\ngridmd: \"0.1\"\n---\n");
+    let mut out = String::from("---\ngridmd: \"1.0\"\n---\n");
 
     let sheets_el = wb.one("sheets");
     let sheet_nodes = sheets_el.map(|s| s.all("sheet")).unwrap_or_default();

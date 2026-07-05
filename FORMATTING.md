@@ -1,6 +1,6 @@
 # GridMD Formatting Reference
 
-**Version 0.1 (draft).** Normative companion to [SPEC.md](SPEC.md) §9.3.
+**Version 1.0.** Normative companion to [SPEC.md](SPEC.md) §9.3.
 Defines property value syntax, number formats, colors and themes, and the
 built-in style catalogs.
 

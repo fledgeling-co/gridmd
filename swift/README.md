@@ -56,8 +56,8 @@ The **root** `Package.swift` makes the library consumable straight from the
 repository URL:
 
 ```swift
-.package(url: "https://github.com/…/grid-md.git", branch: "main")
-// → .product(name: "GridMD", package: "grid-md")
+.package(url: "https://github.com/fledgling-co/gridmd.git", branch: "main")
+// → .product(name: "GridMD", package: "gridmd")
 ```
 
 Products: `.library(name: "GridMD")` and `.executable(name: "gridmd")`.

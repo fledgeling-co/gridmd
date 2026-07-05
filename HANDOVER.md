@@ -1,7 +1,7 @@
 # Handover: reviewing the GridMD spec
 
 **Audience:** an AI (or human) reviewer picking up this spec cold.
-**Task:** adversarially review the GridMD 0.1 draft in this directory with the
+**Task:** adversarially review the GridMD 1.0 in this directory with the
 same context its author had. Everything you need is in this file plus the five
 spec documents; source materials are listed with paths but summarized here in
 case they're unavailable.

@@ -19,7 +19,7 @@ import { StyleRegistry, parseBorderEdge } from '../src/xlsx/styles';
 import type { WorkbookModel } from '../src/types';
 
 const examplePath = fileURLToPath(new URL('../../examples/quarterly-report.gmd', import.meta.url));
-const doc = (body: string): string => `---\ngridmd: "0.1"\n---\n\n# S1\n\n${body}`;
+const doc = (body: string): string => `---\ngridmd: "1.0"\n---\n\n# S1\n\n${body}`;
 const modelOf = (src: string, baseDir = '.'): WorkbookModel => {
   const res = lint(src, { mode: 'strict' });
   assert.deepEqual(res.errors, [], `must lint clean: ${res.errors.map((e) => e.msg).join('; ')}`);
@@ -32,14 +32,14 @@ test('dumpModel: the worked example', () => {
   const out = dumpModel(modelOf(readFileSync(examplePath, 'utf8'), dirname(examplePath)));
   assert.ok(out.endsWith('\n'));
   const parsed = JSON.parse(out);
-  assert.equal(parsed.gridmd, '0.1');
+  assert.equal(parsed.gridmd, '1.0');
   assert.ok(parsed.sheets.length >= 5);
   assert.ok(parsed.names.length >= 1);
 });
 
 test('dumpModel: hidden variants, freeze, protect, rich, blank formula cache', () => {
   const src = `---
-gridmd: "0.1"
+gridmd: "1.0"
 title: T
 date-system: 1904
 names:
@@ -134,18 +134,18 @@ test('scalar: forced text, unterminated CSE, split with trailing spaces', () => 
 
 test('parseDocument: structural errors', () => {
   assert.match(parseDocument('no frontmatter').errors[0]!.msg, /must begin with/);
-  assert.match(parseDocument('---\ngridmd: "0.1"\nno close').errors[0]!.msg, /unterminated frontmatter/);
+  assert.match(parseDocument('---\ngridmd: "1.0"\nno close').errors[0]!.msg, /unterminated frontmatter/);
   // lenient mode downgrades unrecognized lines to warnings
-  const len = parseDocument('---\ngridmd: "0.1"\n---\n\n# S1\n\nstray\n', { mode: 'lenient' });
+  const len = parseDocument('---\ngridmd: "1.0"\n---\n\n# S1\n\nstray\n', { mode: 'lenient' });
   assert.equal(len.errors.length, 0);
   assert.ok(len.warnings.some((w) => /unrecognized/.test(w.msg)));
 });
 
 test('parseDocument: YAML tag rejected, empty & bad body', () => {
-  const tagged = parseDocument('---\ngridmd: "0.1"\nx-a: !!str 5\n---\n\n# S1\n');
+  const tagged = parseDocument('---\ngridmd: "1.0"\nx-a: !!str 5\n---\n\n# S1\n');
   assert.ok(tagged.errors.some((e) => /tags are outside/.test(e.msg)));
   // @ body that is not a mapping
-  const badBody = parseDocument('---\ngridmd: "0.1"\n---\n\n# S1\n\n@ A1\n  - 1\n  - 2\n');
+  const badBody = parseDocument('---\ngridmd: "1.0"\n---\n\n# S1\n\n@ A1\n  - 1\n  - 2\n');
   assert.ok(badBody.errors.some((e) => /must be a YAML mapping/.test(e.msg)));
 });
 
@@ -218,7 +218,7 @@ test('styles: fonts/fills/borders/dxf/numfmt dedup', () => {
 
 test('model: style extend chain, entity, control, range styles, edge borders', () => {
   const src = `---
-gridmd: "0.1"
+gridmd: "1.0"
 styles:
   base: { bold: true }
   derived: { extend: base, italic: true }
@@ -313,7 +313,7 @@ test('calc: entity field missing → #FIELD!, structured totals, LAMBDA arity', 
   const entity = doc('@ B2\n  entity: { type: stock, id: "X", text: X }\n  fields: { Price: 5 }\n@ C1 =B2.Nope\n@ C2 =B2.Price');
   assert.deepEqual(evalIn(entity, 'S1', 'C1'), { err: '#FIELD!' });
   assert.equal(evalIn(entity, 'S1', 'C2'), 5);
-  const lam = `---\ngridmd: "0.1"\nnames:\n  - { name: Add, formula: "LAMBDA(a,b,a+b)" }\n---\n\n# S1\n\n@ A1 =Add(2,3)\n@ A2 =Add(1)\n`;
+  const lam = `---\ngridmd: "1.0"\nnames:\n  - { name: Add, formula: "LAMBDA(a,b,a+b)" }\n---\n\n# S1\n\n@ A1 =Add(2,3)\n@ A2 =Add(1)\n`;
   assert.equal(evalIn(lam, 'S1', 'A1'), 5);
   assert.deepEqual(evalIn(lam, 'S1', 'A2'), { err: '#VALUE!' }); // wrong arity
 });

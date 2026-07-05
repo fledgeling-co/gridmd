@@ -10,7 +10,7 @@ import { xlsxToGridmd } from '../src/xlsx/read';
 import { createEvaluator } from '../src/calc';
 import type { WorkbookModel } from '../src/types';
 
-const doc = (body: string): string => `---\ngridmd: "0.1"\n---\n\n# S1\n\n${body}`;
+const doc = (body: string): string => `---\ngridmd: "1.0"\n---\n\n# S1\n\n${body}`;
 const modelOf = (src: string): WorkbookModel => {
   const res = lint(src, { mode: 'strict' });
   assert.deepEqual(res.errors, [], `must lint clean: ${res.errors.map((e) => e.msg).join('; ')}`);
@@ -18,7 +18,7 @@ const modelOf = (src: string): WorkbookModel => {
 };
 
 test('round-trip: pivot with rows, cols, filters (pageFields) and values', () => {
-  const src = `---\ngridmd: "0.1"\n---\n\n# Data\n\n\`\`\`{table} Sales at A1\n---\n| region | quarter | rep | amount |\n| AU | Q1 | Jo | 10 |\n| NZ | Q2 | Al | 20 |\n\`\`\`\n\n\`\`\`{pivot} P at F1\nsource: Sales\nrows:\n  - { field: region }\ncols:\n  - { field: quarter }\nfilters:\n  - { field: rep }\nvalues:\n  - { field: amount, agg: sum }\n\`\`\`\n`;
+  const src = `---\ngridmd: "1.0"\n---\n\n# Data\n\n\`\`\`{table} Sales at A1\n---\n| region | quarter | rep | amount |\n| AU | Q1 | Jo | 10 |\n| NZ | Q2 | Al | 20 |\n\`\`\`\n\n\`\`\`{pivot} P at F1\nsource: Sales\nrows:\n  - { field: region }\ncols:\n  - { field: quarter }\nfilters:\n  - { field: rep }\nvalues:\n  - { field: amount, agg: sum }\n\`\`\`\n`;
   const { buffer } = writeXlsx(modelOf(src));
   const { gmd } = xlsxToGridmd(buffer);
   assert.deepEqual(lint(gmd, { mode: 'strict' }).errors, []);

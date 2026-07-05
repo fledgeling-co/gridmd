@@ -8,12 +8,12 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/lprhodes/grid-md/go/internal/dump"
-	"github.com/lprhodes/grid-md/go/internal/gridmd"
-	"github.com/lprhodes/grid-md/go/internal/model"
-	"github.com/lprhodes/grid-md/go/internal/parser"
-	"github.com/lprhodes/grid-md/go/internal/xlsxread"
-	"github.com/lprhodes/grid-md/go/internal/xlsxwrite"
+	"github.com/fledgling-co/gridmd/go/internal/dump"
+	"github.com/fledgling-co/gridmd/go/internal/gridmd"
+	"github.com/fledgling-co/gridmd/go/internal/model"
+	"github.com/fledgling-co/gridmd/go/internal/parser"
+	"github.com/fledgling-co/gridmd/go/internal/xlsxread"
+	"github.com/fledgling-co/gridmd/go/internal/xlsxwrite"
 )
 
 // repo is the repository root relative to this test's package directory.

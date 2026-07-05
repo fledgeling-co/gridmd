@@ -178,7 +178,7 @@ export function xlsxToGridmd(buffer: Buffer): ImportResult {
   }
 
   // ---- frontmatter ----
-  const fmLines = ['---', 'gridmd: "0.1"'];
+  const fmLines = ['---', 'gridmd: "1.0"'];
   const title = core ? textOf(one(core, 'title')).trim() : '';
   const creator = core ? textOf(one(core, 'creator')).trim() : '';
   if (title) fmLines.push(`title: ${yamlStr(title)}`);

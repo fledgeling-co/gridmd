@@ -1,10 +1,10 @@
 [package]
 name = "gridmd"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2024"
 description = "GridMD — plain-text spreadsheet format with a two-way XLSX converter (Rust port)"
 license = "MIT"
-repository = "https://github.com/diolog/grid-md"
+repository = "https://github.com/fledgling-co/gridmd"
 
 [[bin]]
 name = "gridmd"

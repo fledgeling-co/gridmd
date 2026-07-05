@@ -86,7 +86,7 @@ test('translateFormula shifts relative refs only', () => {
 // ---- synthetic conversions ----
 
 test('dates serialize as serials with a date numfmt', () => {
-  const { buffer } = convert(`---\ngridmd: "0.1"\n---\n\n# S1\n\n@ A1 2026-07-04\n`);
+  const { buffer } = convert(`---\ngridmd: "1.0"\n---\n\n# S1\n\n@ A1 2026-07-04\n`);
   const parts = zipRead(buffer);
   const sheet = parts.get('xl/worksheets/sheet1.xml')!.toString();
   assert.match(sheet, /<c r="A1" s="\d+"><v>46207<\/v><\/c>/);
@@ -94,14 +94,14 @@ test('dates serialize as serials with a date numfmt', () => {
 });
 
 test('relative fill emits translated formulas per cell', () => {
-  const { buffer } = convert(`---\ngridmd: "0.1"\n---\n\n# S1\n\n@ B1:B3 =A1*2\n`);
+  const { buffer } = convert(`---\ngridmd: "1.0"\n---\n\n# S1\n\n@ B1:B3 =A1*2\n`);
   const sheet = zipRead(buffer).get('xl/worksheets/sheet1.xml')!.toString();
   assert.match(sheet, /<c r="B2"[^>]*><f>A2\*2<\/f><\/c>/);
   assert.match(sheet, /<c r="B3"[^>]*><f>A3\*2<\/f><\/c>/);
 });
 
 test('scenarios + standalone filter + sortState emit in order', () => {
-  const src = `---\ngridmd: "0.1"\n---\n\n# S1\n\n`
+  const src = `---\ngridmd: "1.0"\n---\n\n# S1\n\n`
     + '```{grid} A1\n| a | b |\n| 1 | 9 |\n| 2 | 8 |\n```\n\n'
     + '```{filter} A1:B3\ncols:\n  B: { op: ">", value: 5 }\nsort:\n  - { col: B, order: desc, by: value }\n```\n\n'
     + '```{scenario} Up\ncells: { A2: 5 }\n```\n';

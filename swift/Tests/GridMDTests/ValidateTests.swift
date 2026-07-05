@@ -8,32 +8,32 @@ final class ValidateTests: XCTestCase {
     func hasWarn(_ src: String, _ needle: String) { XCTAssertTrue(warns(src).contains { $0.contains(needle) }, "expected warning \"\(needle)\"") }
     func clean(_ src: String) { XCTAssertTrue(errs(src).isEmpty, "unexpected errors: \(errs(src))") }
 
-    func wrap(_ body: String, fm: String = "gridmd: \"0.1\"") -> String { "---\n\(fm)\n---\n# S\n\(body)" }
+    func wrap(_ body: String, fm: String = "gridmd: \"1.0\"") -> String { "---\n\(fm)\n---\n# S\n\(body)" }
 
     func testFrontmatter() {
         hasErr("---\ngridmd: 1\n---\n# S\n@ A1 1", "gridmd:")
-        hasWarn("---\ngridmd: \"0.1\"\nweird: 1\n---\n# S\n@ A1 1", "unknown frontmatter key")
-        hasErr("---\ngridmd: \"0.1\"\ndate-system: 1999\n---\n# S\n@ A1 1", "date-system must be")
-        hasErr("---\ngridmd: \"0.1\"\ncalc: { mode: nope }\n---\n# S\n@ A1 1", "calc.mode must be")
-        hasErr("---\ngridmd: \"0.1\"\nnames:\n  - { ref: A1 }\n---\n# S\n@ A1 1", "names entries require a name")
-        hasErr("---\ngridmd: \"0.1\"\nnames:\n  - { name: X, ref: A1, formula: B1 }\n---\n# S\n@ A1 1", "exactly one of")
-        hasErr("---\ngridmd: \"0.1\"\nnames:\n  - { name: X, ref: A1 }\n  - { name: x, ref: B1 }\n---\n# S\n@ A1 1", "duplicate defined name")
-        hasErr("---\ngridmd: \"0.1\"\nstyles:\n  bad: notamap\n---\n# S\n@ A1 1", "must be a mapping")
-        hasWarn("---\ngridmd: \"0.1\"\ntheme: { colors: { zzz: \"#FFFFFF\" } }\n---\n# S\n@ A1 1", "unknown theme color slot")
-        hasErr("---\ngridmd: \"0.1\"\ntheme: { colors: { accent1: nothex } }\n---\n# S\n@ A1 1", "theme color")
+        hasWarn("---\ngridmd: \"1.0\"\nweird: 1\n---\n# S\n@ A1 1", "unknown frontmatter key")
+        hasErr("---\ngridmd: \"1.0\"\ndate-system: 1999\n---\n# S\n@ A1 1", "date-system must be")
+        hasErr("---\ngridmd: \"1.0\"\ncalc: { mode: nope }\n---\n# S\n@ A1 1", "calc.mode must be")
+        hasErr("---\ngridmd: \"1.0\"\nnames:\n  - { ref: A1 }\n---\n# S\n@ A1 1", "names entries require a name")
+        hasErr("---\ngridmd: \"1.0\"\nnames:\n  - { name: X, ref: A1, formula: B1 }\n---\n# S\n@ A1 1", "exactly one of")
+        hasErr("---\ngridmd: \"1.0\"\nnames:\n  - { name: X, ref: A1 }\n  - { name: x, ref: B1 }\n---\n# S\n@ A1 1", "duplicate defined name")
+        hasErr("---\ngridmd: \"1.0\"\nstyles:\n  bad: notamap\n---\n# S\n@ A1 1", "must be a mapping")
+        hasWarn("---\ngridmd: \"1.0\"\ntheme: { colors: { zzz: \"#FFFFFF\" } }\n---\n# S\n@ A1 1", "unknown theme color slot")
+        hasErr("---\ngridmd: \"1.0\"\ntheme: { colors: { accent1: nothex } }\n---\n# S\n@ A1 1", "theme color")
     }
 
     func testWorkbookScope() {
-        hasErr("---\ngridmd: \"0.1\"\n---\n@ A1 1\n# S\n@ A1 2", "not allowed before the first sheet")
-        hasErr("---\ngridmd: \"0.1\"\n---\n```{bogus}\n```\n# S\n@ A1 1", "unknown directive")
-        hasErr("---\ngridmd: \"0.1\"\n---\n```{cf} A1\n```\n# S\n@ A1 1", "sheet-scoped and cannot appear")
-        hasErr("---\ngridmd: \"0.1\"\n---\n", "requires at least one sheet")
+        hasErr("---\ngridmd: \"1.0\"\n---\n@ A1 1\n# S\n@ A1 2", "not allowed before the first sheet")
+        hasErr("---\ngridmd: \"1.0\"\n---\n```{bogus}\n```\n# S\n@ A1 1", "unknown directive")
+        hasErr("---\ngridmd: \"1.0\"\n---\n```{cf} A1\n```\n# S\n@ A1 1", "sheet-scoped and cannot appear")
+        hasErr("---\ngridmd: \"1.0\"\n---\n", "requires at least one sheet")
     }
 
     func testSheetNames() {
-        hasErr(wrap("@ A1 1", fm: "gridmd: \"0.1\"").replacingOccurrences(of: "# S", with: "# " + String(repeating: "x", count: 32)), "exceeds 31")
-        hasErr("---\ngridmd: \"0.1\"\n---\n# a/b\n@ A1 1", "forbidden character")
-        hasErr("---\ngridmd: \"0.1\"\n---\n# Dup\n@ A1 1\n# dup\n@ A1 2", "duplicate sheet name")
+        hasErr(wrap("@ A1 1", fm: "gridmd: \"1.0\"").replacingOccurrences(of: "# S", with: "# " + String(repeating: "x", count: 32)), "exceeds 31")
+        hasErr("---\ngridmd: \"1.0\"\n---\n# a/b\n@ A1 1", "forbidden character")
+        hasErr("---\ngridmd: \"1.0\"\n---\n# Dup\n@ A1 1\n# dup\n@ A1 2", "duplicate sheet name")
     }
 
     func testGridAndTable() {
@@ -105,13 +105,13 @@ final class ValidateTests: XCTestCase {
     }
 
     func testWorkbookQueryScriptRaw() {
-        hasErr("---\ngridmd: \"0.1\"\n---\n```{query} Q\n```\n# S\n@ A1 1", "requires source:")
-        hasErr("---\ngridmd: \"0.1\"\n---\n```{query} Q\nsource: x\nsteps: notalist\n```\n# S\n@ A1 1", "steps: must be a list")
-        hasErr("---\ngridmd: \"0.1\"\n---\n```{script} Sc\non: manual\n---\ncode\n```\n# S\n@ A1 1", "requires lang=")
-        hasErr("---\ngridmd: \"0.1\"\n---\n```{script} Sc lang=js\n```\n# S\n@ A1 1", "requires a code payload")
-        hasErr("---\ngridmd: \"0.1\"\n---\n```{raw} weird\n```\n# S\n@ A1 1", "format must be")
-        hasErr("---\ngridmd: \"0.1\"\n---\n```{raw} ooxml part=\"../evil\"\nx\n```\n# S\n@ A1 1", "package-path canonicalization")
-        hasErr("---\ngridmd: \"0.1\"\n---\n```{raw} ooxml encoding=hex\nx\n```\n# S\n@ A1 1", "encoding must be base64")
+        hasErr("---\ngridmd: \"1.0\"\n---\n```{query} Q\n```\n# S\n@ A1 1", "requires source:")
+        hasErr("---\ngridmd: \"1.0\"\n---\n```{query} Q\nsource: x\nsteps: notalist\n```\n# S\n@ A1 1", "steps: must be a list")
+        hasErr("---\ngridmd: \"1.0\"\n---\n```{script} Sc\non: manual\n---\ncode\n```\n# S\n@ A1 1", "requires lang=")
+        hasErr("---\ngridmd: \"1.0\"\n---\n```{script} Sc lang=js\n```\n# S\n@ A1 1", "requires a code payload")
+        hasErr("---\ngridmd: \"1.0\"\n---\n```{raw} weird\n```\n# S\n@ A1 1", "format must be")
+        hasErr("---\ngridmd: \"1.0\"\n---\n```{raw} ooxml part=\"../evil\"\nx\n```\n# S\n@ A1 1", "package-path canonicalization")
+        hasErr("---\ngridmd: \"1.0\"\n---\n```{raw} ooxml encoding=hex\nx\n```\n# S\n@ A1 1", "encoding must be base64")
     }
 
     func testAtDirective() {

@@ -8,7 +8,7 @@ final class CoverageTests: XCTestCase {
     func testMultiTableAndNameSort() throws {
         let d = try GridMD.dump("""
         ---
-        gridmd: "0.1"
+        gridmd: "1.0"
         names:
           - { name: Zeta, ref: A1 }
           - { name: Alpha, ref: B1 }
@@ -33,20 +33,20 @@ final class CoverageTests: XCTestCase {
 
     // Whole-column @ target carries no content (Model early return).
     func testWholeColumnAtTarget() throws {
-        let d = try GridMD.dump("---\ngridmd: \"0.1\"\n---\n# S\n@ B:B { fill: \"#FFFFFF\" }\n@ A1 1")
+        let d = try GridMD.dump("---\ngridmd: \"1.0\"\n---\n# S\n@ B:B { fill: \"#FFFFFF\" }\n@ A1 1")
         XCTAssertTrue(d.contains("\"A1\""))
         XCTAssertFalse(d.contains("\"B1\""))
     }
 
     // Fence anchor qualified by a different sheet name → error.
     func testCrossSheetAnchorQualifier() {
-        let errs = GridMD.lint("---\ngridmd: \"0.1\"\n---\n# S\n```{cf} Other!A1:B2\n- when: x\n```").errors
+        let errs = GridMD.lint("---\ngridmd: \"1.0\"\n---\n# S\n```{cf} Other!A1:B2\n- when: x\n```").errors
         XCTAssertTrue(errs.contains { $0.message.contains("must name the containing sheet") })
     }
 
     // Relative fill over the enumeration cap emits a warning instead of enumerating.
     func testRelativeFillCapWarning() {
-        let result = GridMD.lint("---\ngridmd: \"0.1\"\n---\n# S\n@ A1:A20000 =B1")
+        let result = GridMD.lint("---\ngridmd: \"1.0\"\n---\n# S\n@ A1:A20000 =B1")
         XCTAssertTrue(result.errors.isEmpty)
         XCTAssertTrue(result.warnings.contains { $0.message.contains("overlap checking skipped") })
     }
@@ -73,12 +73,12 @@ final class CoverageTests: XCTestCase {
     }
 
     func testMalformedPipeRowInGrid() {
-        let doc = Parser.parseDocument("---\ngridmd: \"0.1\"\n---\n# S\n```{grid} A1\n| 1 |\nnot a row\n```")
+        let doc = Parser.parseDocument("---\ngridmd: \"1.0\"\n---\n# S\n```{grid} A1\n| 1 |\nnot a row\n```")
         XCTAssertTrue(doc.errors.contains { $0.msg.contains("expected a pipe row") })
     }
 
     func testAtBodyNotAMapping() {
-        let doc = Parser.parseDocument("---\ngridmd: \"0.1\"\n---\n# S\n@ A1\n  - item")
+        let doc = Parser.parseDocument("---\ngridmd: \"1.0\"\n---\n# S\n@ A1\n  - item")
         XCTAssertTrue(doc.errors.contains { $0.msg.contains("must be a YAML mapping") })
     }
 
