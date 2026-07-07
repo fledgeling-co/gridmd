@@ -10,8 +10,8 @@ with **zero silent loss**.
 
 `v1.0` · MIT · by [Luke Rhodes](https://github.com/lprhodes)
 
-[![ci](https://github.com/fledgling-co/gridmd/actions/workflows/ci.yml/badge.svg)](https://github.com/fledgling-co/gridmd/actions/workflows/ci.yml)
-[![release](https://github.com/fledgling-co/gridmd/actions/workflows/release.yml/badge.svg)](https://github.com/fledgling-co/gridmd/releases)
+[![ci](https://github.com/fledgeling-co/gridmd/actions/workflows/ci.yml/badge.svg)](https://github.com/fledgeling-co/gridmd/actions/workflows/ci.yml)
+[![release](https://github.com/fledgeling-co/gridmd/actions/workflows/release.yml/badge.svg)](https://github.com/fledgeling-co/gridmd/releases)
 
 </div>
 
@@ -278,7 +278,7 @@ a bounded formula evaluator over every ` :: ` cache and refuses fabrication
 It's plain text plus a converter, so any AI coding tool can author `.gmd` and
 run the `.gmd` ⇄ `.xlsx` conversion; hand it [SPEC.md](SPEC.md) and one of the
 CLIs above and you're set. For Claude Code there's a ready-made plugin,
-[**gridmd-plugin**](https://github.com/fledgling-co/gridmd-plugin): it bundles
+[**gridmd-plugin**](https://github.com/fledgeling-co/gridmd-plugin): it bundles
 the spec, a `gridmd` skill, a specialist agent, and the Python converter, so an
 agent can read, author, validate and convert with nothing to wire up.
 
